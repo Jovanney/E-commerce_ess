@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "backendpy"
+version = "0.1.0"
+description = ""
+authors = ["Jovanney <100790418+Jovanney@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.99.1"
+alembic = "^1.11.1"
+sqlalchemy = "^2.0.18"
+uvicorn = {extras = ["standard"], version = "^0.22.0"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
