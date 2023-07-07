@@ -56,7 +56,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
   -npm install: instala as dependencias que se encontram no arquivo package.json
 
-  -npm run startpy: entra no ambiente virtual e instala dependencias que se encontram no arquivo poetry.lock
+  -npm run startpy: entra no ambiente virtual e instala dependencias que se encontram no arquivo poetry.lock e inicia o servidor
 
   -npm run dev :  permite que o aplicativo seja executado com recarga de código quente, relatórios de erros e muito mais
 

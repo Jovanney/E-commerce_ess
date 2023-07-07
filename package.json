@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "backend": "poetry shell && poetry install"
+    "startpy": "poetry shell && poetry install && python -m uvicorn api.index:app --reload"
   },
   "dependencies": {
     "@types/node": "20.4.0",
