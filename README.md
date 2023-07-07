@@ -35,6 +35,17 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 - obs depois da instalação verificar o PATH
 
+### Comandos básicos do projeto
+
+  -npm install: instala as dependencias que se encontram no arquivo package.json
+
+  -npm run startpy: entra no ambiente virtual e instala dependencias que se encontram no arquivo poetry.lock e inicia o servidor
+
+  -npm run dev :  permite que o aplicativo seja executado com recarga de código quente, relatórios de erros e muito mais
+
+  Abra [http://localhost:3000](http://localhost:3000) com o navegador para ver o resultado.
+
+
 ### Migration (Alembic)
 - A instalação ja deveria ter sido feita no momento do poetry install pois ele se encontra como dependencia dentro do poetry.lock
 
@@ -52,15 +63,6 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - login: postgres
 - senha: postgres
 
-### Comandos básicos do projeto
-
-  -npm install: instala as dependencias que se encontram no arquivo package.json
-
-  -npm run startpy: entra no ambiente virtual e instala dependencias que se encontram no arquivo poetry.lock e inicia o servidor
-
-  -npm run dev :  permite que o aplicativo seja executado com recarga de código quente, relatórios de erros e muito mais
-
-  Abra [http://localhost:3000](http://localhost:3000) com o navegador para ver o resultado.
 
 
 ### Comandos basicos do alembic
