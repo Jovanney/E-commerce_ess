@@ -40,7 +40,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ### Subir a imagem do docker
 - Para subir o serviço
-  - docker run -d -p 5438:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=postgres postgres:latest
+  - docker run -d -p 5438:5432 -e POSTGRES_USER=dbecommerce -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=postgres postgres:latest
   
 - Para derrubar o serviço
   - docker ps
@@ -49,14 +49,16 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ### SGBD
 - Nesse link é possível verificar os documentos que estão armazenados no postgres para serem enviados posteriormente
 - http://localhost:5438
-- login: postgres
+- login: dbecommerce
 - senha: postgres
 
 ### Comandos básicos do projeto
 
   -npm install: instala as dependencias que se encontram no arquivo package.json
 
-  -npm run startpy: entra no ambiente virtual e instala dependencias que se encontram no arquivo poetry.lock e inicia o servidor
+  -npm run startpy: entra no ambiente virtual e instala dependencias que se encontram no arquivo poetry.lock
+
+  -npm run startback: inicia o servidor back-end
 
   -npm run dev :  permite que o aplicativo seja executado com recarga de código quente, relatórios de erros e muito mais
 
