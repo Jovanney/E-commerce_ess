@@ -1,3 +1,8 @@
+Scenario: Teste
+Given X
+When Y
+Then Z + F
+
 Scenario : Cancelar pedido logado em sua conta
 Given: Usuário “Italo Felipe de Andrade” está em “Histórico de pedidos"
 And: A opção “Cancelar pedido” está disponível
@@ -19,7 +24,6 @@ Given: Usuário está na página do menu geral
 When: Ele clica na opção “adicionar ao carrinho” de um item X
 And: Item X é da mesma loja dos outros produtos em seu carrinho
 Then: Carrinho é atualizado com o novo item, adicionado pelo usuário
-
 
 Scenario: Adicionar produto ao carrinho de compras de lojas diferentes
 Given: Usuário está na página do menu geral
