@@ -24,3 +24,9 @@ And: Os dados “vitor modesto leitao” e “vml2@cin.ufpe.br” não estão ca
 When: Usuário coloca os seus dados no campo de login
 And: Usuário clicar na opção “entrar”
 Then: Aparece uma mensagem informando que os dados não estão cadastrados no sistema
+
+Scenario 5: Teste
+Given X
+And Y
+When Z
+Then W
