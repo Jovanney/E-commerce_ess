@@ -11,7 +11,3 @@ Scenario 2: Loja excluir itens cadastrados
  And: Ele clica na confirmação “Certeza que deseja excluir permanentemente esse item??”
  Then: O item é deletado do banco de dados da aplicação
 
-Scenario 3: Será um Teste *******
-  Given: Coisa nova 
-  Then: Novo teste que está sendo feito!
-  And: 
