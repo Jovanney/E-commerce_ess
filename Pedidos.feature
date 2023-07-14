@@ -1,7 +1,4 @@
-Scenario: Teste
-Given X
-When Y
-Then Z
+Scenario : Teste roteiro
 
 Scenario : Cancelar pedido logado em sua conta
 Given: Usuário “Italo Felipe de Andrade” está em “Histórico de pedidos"
