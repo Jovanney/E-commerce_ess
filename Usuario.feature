@@ -26,3 +26,7 @@ And: Usuário clicar na opção “entrar”
 Then: Aparece uma mensagem informando que os dados não estão cadastrados no sistema
 
 scenario 5: teste
+given x
+and y
+when z
+and w
