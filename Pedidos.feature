@@ -1,5 +1,10 @@
 Scenario: Teste main 1
 
+Scenario: Teste dev 1
+
+Scenario: Teste dev 2
+
+
 Scenario : Cancelar pedido logado em sua conta
 Given: Usuário “Italo Felipe de Andrade” está em “Histórico de pedidos"
 And: A opção “Cancelar pedido” está disponível
