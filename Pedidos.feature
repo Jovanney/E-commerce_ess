@@ -1,4 +1,6 @@
-Scenario : Teste roteiro
+Scenario: Teste main 1
+
+Scenario: Teste dev 1
 
 Scenario : Cancelar pedido logado em sua conta
 Given: Usuário “Italo Felipe de Andrade” está em “Histórico de pedidos"
@@ -14,7 +16,6 @@ And: A opção “Cancelar pedido” está indisponível
 When: Usuário clica em “cancelar pedido”
 Then: Aparece uma mensagem informando que o pedido não pode ser cancelado
 And: Pedido continua na lista de pedidos
-
 
 Scenario: Adicionar produto ao carrinho de compras da mesma loja
 Given: Usuário está na página do menu geral
