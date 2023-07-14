@@ -13,7 +13,6 @@ When: Usuário clica em “cancelar pedido”
 Then: Aparece uma mensagem informando que o pedido não pode ser cancelado
 And: Pedido continua na lista de pedidos
 
-
 Scenario: Adicionar produto ao carrinho de compras da mesma loja
 Given: Usuário está na página do menu geral
 When: Ele clica na opção “adicionar ao carrinho” de um item X
