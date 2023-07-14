@@ -25,8 +25,9 @@ When: Usuário coloca os seus dados no campo de login
 And: Usuário clicar na opção “entrar”
 Then: Aparece uma mensagem informando que os dados não estão cadastrados no sistema
 
-Scenario 5: Teste
-Given X
-And Y
-When Z
-Then W
+scenario 5: teste
+given x
+and y
+when z
+and w
+
