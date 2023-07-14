@@ -12,4 +12,5 @@ Scenario 2: Loja excluir itens cadastrados
  Then: O item é deletado do banco de dados da aplicação
 
 Scenario 3: Será um Teste *******
-  Then: Esse é algo para tess 
+  Given: Coisa nova 
+  Then: Novo teste que está sendo feito!
