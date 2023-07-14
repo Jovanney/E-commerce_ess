@@ -25,4 +25,4 @@ When: Usuário coloca os seus dados no campo de login
 And: Usuário clicar na opção “entrar”
 Then: Aparece uma mensagem informando que os dados não estão cadastrados no sistema
 
-Scenario 5: Teste questão 14
+Scenario 5: Teste questão 14 depois do ajuste
