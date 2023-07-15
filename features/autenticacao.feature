@@ -27,3 +27,10 @@ Then o modal de Recuperação de senha aparece
 When eu insiro um endereço de e-mail não cadastrado 
 And eu clico em Enviar Then uma mensagem de erro é exibida informando que o endereço de e-mail não está cadastrado 
 And o modal de Recuperação de senha permanece aberto para que eu possa tentar novamente.
+
+Cenário 4: Falha ao fazer login com credenciais incorretas 
+Given eu estou na tela de Login 
+When eu insiro um endereço de e-mail ou senha incorretos 
+And eu clico em Entrar 
+Then uma mensagem de erro é exibida informando que as credenciais estão incorretas 
+And o campo de endereço de e-mail e senha são limpos para que eu possa tentar novamente.
