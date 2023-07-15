@@ -1,10 +1,14 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import get_db
-from database.models import Usuario, Endereco, Pedido
-from database.schemas import UsuarioCreate, EnderecoCreate, PedidoCreate
+from database.get_db import get_db
+from database.models.modelos import Usuario, Endereco, Pedido
+from database.shemas.schemas import UsuarioCreate, EnderecoCreate, PedidoCreate
 
 app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
 
 @app.post('/usuarios/')
 def create_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
