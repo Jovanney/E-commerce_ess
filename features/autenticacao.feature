@@ -20,4 +20,10 @@ And eu insiro meu endereço de e-mail e nova senha
 Then eu sou redirecionado para a página principal do e-commerce 
 And eu consigo ver os produtos do e-commerce.
 
-teste
+Cenário 3: Falha ao recuperar senha de usuário 
+Given eu estou na tela de Login 
+And eu clico em “Esqueci minha senha” 
+Then o modal de Recuperação de senha aparece 
+When eu insiro um endereço de e-mail não cadastrado 
+And eu clico em Enviar Then uma mensagem de erro é exibida informando que o endereço de e-mail não está cadastrado 
+And o modal de Recuperação de senha permanece aberto para que eu possa tentar novamente.
