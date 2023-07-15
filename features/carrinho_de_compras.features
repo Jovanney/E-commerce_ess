@@ -11,4 +11,8 @@ Scenario 2: Loja excluir itens cadastrados
  And: Ele clica na confirmação “Certeza que deseja excluir permanentemente esse item??”
  Then: O item é deletado do banco de dados da aplicação
 
- teste <--
+Scenario 3: remover produto do carrinho de compras
+Given: Usuário está na página do menu geral
+When: Ele clica na opção “remover do carrinho” de um item X
+And: Item X não é da mesma loja dos outros produtos em seu carrinho
+Then: Aparece uma mensagem informando ao cliente que o item Xfoi removido do carrinho
