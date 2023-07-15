@@ -15,9 +15,11 @@ Scenario 3: remover produto do carrinho de compras
 Given: Usuário está na página do menu geral
 When: Ele clica na opção “remover do carrinho” de um item X
 And: Item X não é da mesma loja dos outros produtos em seu carrinho
-Then: Aparece uma mensagem informando ao cliente que o item Xfoi removido do carrinho
+Then: Aparece uma mensagem informando ao cliente que o item foi removido do carrinho
 
 Scenario 4:  saindo do carrinho de compras
 Given: Usuário está na página do menu geral
 When: Ele clica na opção “sair do carrinho”
 Then: Usuario está em outra página
+
+Erros corrigidos, não sei qual erro era na vdd
