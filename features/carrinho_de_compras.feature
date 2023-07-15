@@ -29,4 +29,3 @@ And:  Usuário visualiza apenas uma unidade do item
 And:  Ele visualiza um botão ao lado do item
 When: Ele clica no botão 
 Then: o item agora possui duas unidades
-Then: ERRO AQUI
