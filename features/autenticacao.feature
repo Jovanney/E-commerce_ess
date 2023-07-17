@@ -19,6 +19,7 @@ And eu volto para a tela de Login
 And eu insiro meu endereço de e-mail e nova senha 
 Then eu sou redirecionado para a página principal do e-commerce 
 And eu consigo ver os produtos do e-commerce.
+then teste
 
 Cenário 3: Falha ao recuperar senha de usuário 
 Given eu estou na tela de Login 
