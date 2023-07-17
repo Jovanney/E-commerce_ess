@@ -45,3 +45,14 @@ And eu clico em Salvar
 Then minha senha é alterada com sucesso 
 And eu recebo uma mensagem de confirmação de alteração de senha 
 And eu posso continuar navegando na página principal do e-commerce e ver os produtos do e-commerce.
+
+Cenário 6: Adicionando um novo endereço de entrega 
+Given eu estou na página principal do e-commerce 
+And eu clico em “Minha conta” 
+Then a página de Minha conta aparece 
+When eu clico em “Adicionar novo endereço” 
+And eu preencho os campos com as informações do meu novo endereço 
+And eu clico em Salvar 
+Then meu novo endereço é adicionado com sucesso 
+And eu recebo uma mensagem de confirmação de adição de novo endereço 
+And eu posso continuar navegando na página principal do e-commerce e ver os produtos do e-commerce.
