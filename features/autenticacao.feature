@@ -34,3 +34,14 @@ When eu insiro um endereço de e-mail ou senha incorretos
 And eu clico em Entrar 
 Then uma mensagem de erro é exibida informando que as credenciais estão incorretas 
 And o campo de endereço de e-mail e senha são limpos para que eu possa tentar novamente.
+
+Cenário 5: Alterando senha de usuário 
+Given eu estou na página principal do e-commerce 
+And eu clico em “Minha conta” 
+Then a página de Minha conta aparece 
+When eu clico em “Alterar senha” 
+And eu insiro minha senha atual e minha nova senha 
+And eu clico em Salvar 
+Then minha senha é alterada com sucesso 
+And eu recebo uma mensagem de confirmação de alteração de senha 
+And eu posso continuar navegando na página principal do e-commerce e ver os produtos do e-commerce.
