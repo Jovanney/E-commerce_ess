@@ -32,7 +32,6 @@ if config.config_file_name is not None:
 
 # ---------------- LOADING Models -------------------------#
 from database.models.modelos import Base
-from database.models.modelos import Usuario, Endereco, Pedido
 
 #------------------------------------------------------------#
 # target_metadata = None
