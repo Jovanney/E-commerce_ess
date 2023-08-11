@@ -7,7 +7,6 @@ DATABASE_URL = "postgresql+psycopg2://dbecommerce:postgres@localhost:5438/postgr
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-@contextmanager
 def get_db():
     db = SessionLocal()
     try:
