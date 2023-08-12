@@ -8,7 +8,7 @@ def get_user_by_email(usuario_email: str, db: SessionLocal = Depends(get_db)):
     return db.query(Usuario).filter(Usuario.email == usuario_email).first()
 
 def create_user(db: Session, user: UsuarioCreate):
-    db_user = Usuario(email=user.email, senha=user.senha)
+    db_user = Usuario(**user.dict())
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
