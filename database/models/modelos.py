@@ -71,9 +71,11 @@ class Estoque(Base):
     
     id_estoque = Column(Integer, primary_key=True)
     id_produto = Column(Integer, ForeignKey('produto.id_produto'))
+    id_loja = Column(String(14), ForeignKey('loja.cnpj'))
     quantidade = Column(Integer)
     
     produtos = relationship('Produto', back_populates='estoque')
+    loja = relationship('Loja', back_populates='estoque')
     
 class Pedido(Base):
      __tablename__='pedido'
