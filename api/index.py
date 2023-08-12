@@ -26,7 +26,7 @@ def read_root():
 
 @app.post('/usuarios/')
 def create_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
-    db_user = get_user_by_email(db, email=usuario.email)
+    db_user = get_user_by_email(db = db, usuario_email=usuario.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     return create_user(db=db, user=usuario)
