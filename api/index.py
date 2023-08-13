@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database.crud.crud import get_user_by_email, create_user
+from database.crud.crud import create_loja_c, get_loja_by_cnpj, get_user_by_email, create_user
 from database.get_db import get_db
-from database.shemas.schemas import UsuarioCreate
+from database.shemas.schemas import LojaCreate, UsuarioCreate
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -30,6 +30,20 @@ def create_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     return create_user(db=db, user=usuario)
+
+@app.post('/loja/')
+def create_loja(loja: LojaCreate, db: Session = Depends(get_db)):
+    db_loja = get_loja_by_cnpj(db= db, cnpj_loja = loja.cnpj)
+    if db_loja:
+        raise HTTPException(status_code=400, detail="Cnpj already registered")
+    return create_loja_c(db=db, loja=loja)
+
+@app.get('/loja/{loja_cnpj}')
+def read_loja(loja_cnpj: str, db: Session = Depends(get_db)):
+    db_loja = get_loja_by_cnpj(db=db, cnpj_loja=loja_cnpj)
+    if db_loja is None:
+        raise HTTPException(status_code=404, detail='Loja not found')
+    return db_loja
 
 @app.get('/usuarios/{usuario_id}')
 def read_usuario(usuario_id: int, db: Session = Depends(get_db)):
