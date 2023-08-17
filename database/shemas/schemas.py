@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import List
 
+
 class EnderecoBase(BaseModel):
     cep: str
     rua: str
@@ -51,7 +52,7 @@ class PedidoBase(BaseModel):
     id_pedido:int
     cpf_usuario:str 
     preco_total:float 
-    status_pedido:str 
+    pedido_status:str 
 
 class EnderecoCreate(EnderecoBase):
     pass
