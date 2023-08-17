@@ -28,7 +28,7 @@ class Usuario(Base):
     cpf = Column(String(11), primary_key=True)
     nome = Column(String(100))
     email = Column(String(50))
-    senha = Column(String(50))
+    senha = Column(String(200))
     admin = Column(Boolean)
     
     enderecos = relationship('Endereco', back_populates='usuario')
@@ -48,7 +48,7 @@ class Loja(Base):
     
     cnpj = Column(String(14), primary_key=True)
     email = Column(String(50))
-    senha = Column(String(50))
+    senha = Column(String(200))
     nome = Column(String(100))
     
     produtos = relationship('Produto', back_populates='loja')
