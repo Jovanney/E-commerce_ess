@@ -49,3 +49,34 @@ def get_pedido_itens_cart(cpf_user: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail='Pedido not found')
     return get_itens_by_pedidos(pedido=pedido, db=db)
 
+ #Adicionar itens | Verifica se existe algum pedido "Nao confirmado", se houver, adiciona um item a esse pedido, caso nao, cria um pedido e adiciona o item 
+
+@app.post('/novo-item/')
+def post_item_cart(id_produto: int, usuario_cpf: str, quantidade: int, db: Session = Depends(get_db)):
+    produto = get_produto(id_produto=id_produto, db=db)
+    pedido = get_pedidos_by_status(status=1, cpf_user=usuario_cpf, db=db)
+
+    if pedido is None:
+        print('entrei')
+        pedido = create_pedido_not_confirmed(db=db, cpf_user=usuario_cpf)
+
+        
+    item_existente = get_item(id_produto=id_produto, id_pedido=pedido.id_pedido, db=db)  # Verifica se já existe um item igual
+
+    if item_existente is not None:  # Verifica se o item já existe no carrinho
+        item_existente.quantidade += quantidade
+        update_total_price(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
+        return update_quantidade_item(item=item_existente, db=db)
+    else:
+        itens = get_itens_by_pedidos(pedido = pedido, db=db)
+    
+        if len(itens) >= 1:
+            exist_product = get_produto(id_produto=itens[0].id_produto, db=db)
+            if exist_product.cnpj_loja == produto.cnpj_loja:
+                update_total_price(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
+                return create_item(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
+            else:
+                return {'ERROR': 'produto inserido nao e da mesma loja que os produtos do carrinho'}
+        else:
+            update_total_price(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
+            return create_item(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
