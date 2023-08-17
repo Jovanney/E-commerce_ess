@@ -57,3 +57,8 @@ def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: SessionL
         raise credentials_exception
     return entity
 
+def update_user_password(db, user, new_password):
+    hashed_password = auth.get_password_hash(new_password)
+    user.senha = hashed_password
+    db.merge(user)
+    db.commit()
