@@ -1,3 +1,6 @@
+CRUD: 
+
+
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database.get_db import SessionLocal, get_db
@@ -48,5 +51,25 @@ def get_pedidos_by_usuario(cpf_usuario: str, db: Session):
 
 
 
+# Cancelamento de Pedidos
+def cancelar_pedido(pedido_id: int, cpf_usuario: str, db: Session):
+    # Primeiro, verificamos se o pedido existe e pertence ao CPF fornecido
+    pedido = db.query(Pedido).filter(Pedido.id_pedido == pedido_id, Pedido.cpf_usuario == cpf_usuario).first()
 
+    if not pedido:
+        raise HTTPException(status_code=404, detail="Pedido não encontrado")
+
+    if pedido.pedido_status == 1: 
+        raise HTTPException(status_code=404, detail="Pedido não foi confirmado")
     
+    if pedido.pedido_status == 5: # ID do status "Cancelado"
+        raise HTTPException(status_code=403, detail="O pedido já foi cancelado anteriormente")
+
+    if pedido.pedido_status == 2: # ID do status "Confirmado"
+        pedido.pedido_status = 5 # Mudança para o status "Cancelado"
+        db.commit()
+        return {"message": "Pedido cancelado com sucesso"}
+    else: # Se for o ID 3 ou ID 4, não pode ser cancelado
+        raise HTTPException(status_code=403, detail="Pedido não pode mais ser cancelado")
+    
+
