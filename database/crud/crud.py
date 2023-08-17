@@ -62,3 +62,7 @@ def update_user_password(db, user, new_password):
     user.senha = hashed_password
     db.merge(user)
     db.commit()
+    
+def delete_user(db, user):
+    db.delete(user)
+    db.commit()
