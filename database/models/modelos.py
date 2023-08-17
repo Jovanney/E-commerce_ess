@@ -26,7 +26,7 @@ class Usuario(Base):
     cpf = Column(String(11), primary_key=True)
     nome = Column(String(100))
     email = Column(String(50))
-    senha = Column(String(200))
+    senha = Column(String(50))
     admin = Column(Boolean)
     
     enderecos = relationship('Endereco', back_populates='usuario')
@@ -46,7 +46,7 @@ class Loja(Base):
     
     cnpj = Column(String(14), primary_key=True)
     email = Column(String(50))
-    senha = Column(String(200))
+    senha = Column(String(50))
     nome = Column(String(100))
     
     produtos = relationship('Produto', back_populates='loja')
@@ -86,7 +86,7 @@ class Pedido(Base):
      status_pedido=Column(String(50))
      
      usuario = relationship('Usuario', back_populates='pedidos')
-     itens = relationship('Item', back_populates='pedidos')
+     itens = relationship('Item', back_populates='pedidos') 
 class Item(Base):
     __tablename__ = 'item'
     
