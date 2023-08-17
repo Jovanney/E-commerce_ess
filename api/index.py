@@ -60,3 +60,21 @@ def read_produto(produto_id: int, db: Session = Depends(get_db)):
 def delete_produto(produto_id: int, db: Session = Depends(get_db)):
     delete_produto_by_id(db=db, produto_id=produto_id)
     return {"message": "Product Deleted"}
+
+# Update em um produto com base no ID
+@app.put("/update_produto/{produto_id}")
+def update_produto_route(
+    produto_id: int,
+    new_categoria: Optional[str] = None,
+    new_nome: Optional[str] = None,
+    new_marca: Optional[str] = None,
+    new_preco: Optional[int] = None,
+    new_especificacoes: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    print(new_preco)
+    new_ats = [new_categoria, new_nome, new_marca, new_preco, new_especificacoes]
+    db_produto = update_produto(db, produto_id, new_ats)
+    if db_produto is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return db_produto
