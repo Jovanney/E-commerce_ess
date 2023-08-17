@@ -1,7 +1,7 @@
 from typing import Optional
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database.crud.crud import create_user, get_pedidos_by_usuario, cancelar_pedido
+from database.crud.crud import create_user, get_loja_by_email, get_pedidos_by_usuario, cancelar_pedido
 from database.get_db import get_db
 from database.shemas.schemas import UsuarioCreate, PedidoBase
 from database.crud.crud import delete_produto_by_id, get_user_by_email, create_user, get_produto_by_id, create_prod, update_produto
