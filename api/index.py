@@ -46,3 +46,11 @@ def create_produto(produto: ProdutoCreate, db: Session = Depends(get_db)):
     if db_produto:
         raise HTTPException(status_code=404, detail="id already registered")
     return create_prod(db=db, produto=produto)
+
+# Exibir os itens cadastrados com base no ID
+@app.get('/produtos/{produto_id}')
+def read_produto(produto_id: int, db: Session = Depends(get_db)):
+    db_produto = get_produto_by_id(db = db, produto_id=produto_id)
+    if db_produto is None:
+        raise HTTPException(status_code=404, detail='Product not found')
+    return db_produto
