@@ -54,6 +54,11 @@ class PedidoBase(BaseModel):
     preco_total:float 
     pedido_status:str 
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
 class EnderecoCreate(EnderecoBase):
     pass
 
