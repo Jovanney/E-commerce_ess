@@ -1,8 +1,13 @@
-from fastapi import FastAPI, Depends, HTTPException
+from database.shemas.schemas import Token, UsuarioBase
+from datetime import timedelta
+from typing import Annotated, Type
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from database.crud.crud import get_user_by_email, create_user
+from database.auth import ACCESS_TOKEN_EXPIRE_MINUTES, authenticate, create_access_token, verify_password
+from database.crud.crud import create_loja_c, delete_user, get_current_user, get_loja_by_email, get_user_by_email, create_user, update_user_password
 from database.get_db import get_db
-from database.shemas.schemas import UsuarioCreate
+from database.shemas.schemas import LojaCreate, UsuarioCreate
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -31,9 +36,50 @@ def create_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
     return create_user(db=db, user=usuario)
 
-@app.get('/usuarios/{usuario_id}')
-def read_usuario(usuario_id: int, db: Session = Depends(get_db)):
-    db_usuario = get_user_by_email(db, usuario_id)
-    if db_usuario is None:
-        raise HTTPException(status_code=404, detail='User not found')
-    return db_usuario
+@app.post('/loja/')
+def create_loja(loja: LojaCreate, db: Session = Depends(get_db)):
+    db_loja = get_loja_by_email(db= db, email_loja= loja.cnpj)
+    if db_loja:
+        raise HTTPException(status_code=400, detail="Cnpj already registered")
+    return create_loja_c(db=db, loja=loja)
+
+
+@app.post("/token", response_model=Token)
+async def login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Session = Depends(get_db)
+):
+    entity = authenticate(db = db, email = form_data.username, password = form_data.password)
+    if not entity:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": entity.email}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get("/users/me/")
+async def read_users_me(
+    current_user = Depends(get_current_user)
+):
+    return current_user
+
+@app.put("/usuario/update_senha")
+def update_senha(new_password: str, old_password: str, current_user: Type = Depends(get_current_user), db: Session = Depends(get_db)):
+    if not verify_password(old_password, current_user.senha):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail="Senha antiga incorreta")
+    if not new_password:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="Nova senha não pode ser vazia")
+    update_user_password(db, current_user, new_password)
+    return {"detail": "Senha atualizada com sucesso"}
+
+@app.delete("/usuario/delete")
+def delete(current_user = Depends(get_current_user), db: Session = Depends(get_db)):
+    delete_user(db, current_user)
+    return {"detail": "Usuário deletado com sucesso"}

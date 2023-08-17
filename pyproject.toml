@@ -12,6 +12,12 @@ alembic = "^1.11.1"
 sqlalchemy = "^2.0.18"
 uvicorn = {extras = ["standard"], version = "^0.22.0"}
 psycopg2 = "^2.9.6"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-jose = "^3.3.0"
+mock = "^5.1.0"
+pytest = "^7.4.0"
+pytest-bdd = "^6.1.1"
+httpx = "^0.24.1"
 
 
 [build-system]
