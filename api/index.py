@@ -1,8 +1,9 @@
+from typing import Optional
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database.crud.crud import get_user_by_email, create_user
+from database.crud.crud import delete_produto_by_id, get_user_by_email, create_user, get_produto_by_id, create_prod, update_produto
 from database.get_db import get_db
-from database.shemas.schemas import UsuarioCreate
+from database.shemas.schemas import UsuarioCreate, ProdutoCreate
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -37,3 +38,11 @@ def read_usuario(usuario_id: int, db: Session = Depends(get_db)):
     if db_usuario is None:
         raise HTTPException(status_code=404, detail='User not found')
     return db_usuario
+
+# adicionar produtos
+@app.post('/produtos/')
+def create_produto(produto: ProdutoCreate, db: Session = Depends(get_db)):
+    db_produto = get_produto_by_id(db = db, produto_id=produto.id_produto)
+    if db_produto:
+        raise HTTPException(status_code=404, detail="id already registered")
+    return create_prod(db=db, produto=produto)
