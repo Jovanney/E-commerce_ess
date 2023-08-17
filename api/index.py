@@ -67,3 +67,14 @@ async def read_users_me(
     current_user = Depends(get_current_user)
 ):
     return current_user
+
+@app.put("/usuario/update_senha")
+def update_senha(new_password: str, old_password: str, current_user: Type = Depends(get_current_user), db: Session = Depends(get_db)):
+    if not verify_password(old_password, current_user.senha):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail="Senha antiga incorreta")
+    if not new_password:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="Nova senha não pode ser vazia")
+    update_user_password(db, current_user, new_password)
+    return {"detail": "Senha atualizada com sucesso"}
