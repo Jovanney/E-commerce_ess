@@ -23,3 +23,10 @@ And: No banco de dados, temos um produto com id_produto igual a "1".
 And: No banco de dados, temos um pedido com cpf_usuario igual a “98765432100”, e id_pedido = “1”
 When: Faço uma requisição do tipo POST para a rota /novo-item/ informando o id_produto “1”, meu cpf e a quantidade 2
 Then: a função atualiza a quantidade do item que tem o produto com id = “1”
+
+
+Scenario: Tentativa de inserção de um produto em um carrinho que não é da mesma loja que o produto que já está no carrinho
+Given: Sou um Usuario registrado no sistema com o cpf igual a “98765432100” 
+And: No banco de dados, tenho um item que tem um produto com id_produto “1” que é da loja com cnpj “12345678901234”
+When: Faço requisição do tipo POST para a rota /novo-item/ informando o id_produto “2, meu cpf “98765432100” e a quantidade “2” uma inserção de outro item que tem um produto que é da loja com cnpj “56789012345678”
+Then: O servidor retorna um erro com detalhe "produto inserido não é da mesma loja que os produtos do carrinho"
