@@ -27,6 +27,9 @@ def get_user_by_cpf(usuario_cpf: str, db: SessionLocal = Depends(get_db)):
 def get_loja_by_email(email_loja: str, db: SessionLocal = Depends(get_db)):
     return db.query(Loja).filter(Loja.email == email_loja).first()
 
+def get_user_by_email(email_user: str, db: SessionLocal = Depends(get_db)):
+    return db.query(Usuario).filter(Usuario.email == email_user).first()
+
 def create_loja_c(db: Session, loja: LojaCreate):
     db_loja = Loja(**loja.dict())
     db_loja.senha = auth.get_password_hash(db_loja.senha)

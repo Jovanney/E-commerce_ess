@@ -3,7 +3,8 @@ from fastapi import Depends
 from passlib.context import CryptContext
 from jose import jwt
 
-from database.crud.crud import get_loja_by_email, get_user_by_email
+import database.crud.crud as crud 
+# from database.crud.crud import get_loja_by_email, get_user_by_email
 from database.get_db import SessionLocal, get_db
 
 SECRET_KEY = "2b9297ddf50a5336ba333962928ce57a1db91464c45c1831d26a4e4b23f5889d"
@@ -20,8 +21,8 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 def authenticate(email: str, password: str, db: SessionLocal = Depends(get_db)):
-    user = get_user_by_email(db = db, usuario_email = email)
-    store = get_loja_by_email(db = db, email_loja= email)
+    user = crud.get_user_by_email(db = db, usuario_email = email)
+    store = crud.get_loja_by_email(db = db, email_loja= email)
     entity = user if user else store
     if not entity:
         return False

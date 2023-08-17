@@ -1,17 +1,16 @@
-from anyio import Path
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database.crud.crud import  create_item, create_pedido_not_confirmed, get_item, get_itens_by_pedidos, get_pedidos_by_status, get_produto, get_user_by_cpf, create_user, update_quantidade_item, update_total_price
+from database.crud.crud import  create_item, create_pedido_not_confirmed, get_item, get_itens_by_pedidos,  get_pedidos_by_status, get_produto, get_user_by_cpf, create_user, update_quantidade_item, update_total_price, create_loja_c, delete_user, get_current_user, get_user_by_email, create_user, update_user_password
+
 from database.get_db import get_db
-from database.models.modelos import Item, Produto, Usuario
-from database.shemas.schemas import  ItemBase, ProdutoBase, UsuarioBase, UsuarioCreate, Token
+from database.shemas.schemas import UsuarioCreate, Token
 from datetime import timedelta
 from typing import Annotated, Type
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
+
 from database.auth import ACCESS_TOKEN_EXPIRE_MINUTES, authenticate, create_access_token, verify_password
-from database.crud.crud import create_loja_c, delete_user, get_current_user, get_loja_by_email, get_user_by_email, create_user, update_user_password
+
 from database.get_db import get_db
 from database.shemas.schemas import LojaCreate, UsuarioCreate
 
@@ -42,13 +41,6 @@ def create_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="cpf already registered")
     return create_user(db=db, user=usuario)
 
-
-@app.get('/usuarios/{usuario_id}')
-def read_usuario(usuario_id: int, db: Session = Depends(get_db)):
-    db_usuario = get_user_by_cpf(db, usuario_id)
-    if db_usuario is None:
-        raise HTTPException(status_code=404, detail='User not found')
-    return db_usuario
 
 #Retorna todos os itens do carrinho "pedido nao confirmado"
 
