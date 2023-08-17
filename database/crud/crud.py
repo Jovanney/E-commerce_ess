@@ -1,6 +1,3 @@
-CRUD: 
-
-
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
 from database.get_db import SessionLocal, get_db
