@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import List
 
+
 class EnderecoBase(BaseModel):
     cep: str
     rua: str
@@ -56,6 +57,7 @@ class PedidoBase(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
 
 class EnderecoCreate(EnderecoBase):
     pass

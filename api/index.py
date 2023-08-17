@@ -1,5 +1,11 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
+from database.crud.crud import create_user, get_pedidos_by_usuario, cancelar_pedido
+from database.get_db import get_db
+from database.shemas.schemas import UsuarioCreate, PedidoBase
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List
 from database.crud.crud import  create_item, create_pedido_not_confirmed, get_item, get_itens_by_pedidos,  get_pedidos_by_status, get_produto, get_user_by_cpf, create_user, update_quantidade_item, update_total_price, create_loja_c, delete_user, get_current_user, get_user_by_email, create_user, update_user_password
 
 from database.get_db import get_db
@@ -33,6 +39,17 @@ app.add_middleware(
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
+@app.get('/pedidos/{cpf_usuario}/')
+def get_pedidos_route(cpf_usuario: str, db: Session = Depends(get_db)):
+    pedidos = get_pedidos_by_usuario(cpf_usuario, db)
+    if not pedidos:
+        raise HTTPException(status_code=404, detail="Usuário sem pedidos")
+    return pedidos
+
+@app.put('/cancelar_pedido/{cpf_usuario}/{pedido_id}')
+def cancelar_pedido_route(cpf_usuario: str, pedido_id: int, db: Session = Depends(get_db)):
+    return cancelar_pedido(cpf_usuario=cpf_usuario, pedido_id=pedido_id, db=db)
 
 @app.post('/usuarios/')
 def create_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
@@ -131,3 +148,4 @@ def update_senha(new_password: str, old_password: str, current_user: Type = Depe
 def delete(current_user = Depends(get_current_user), db: Session = Depends(get_db)):
     delete_user(db, current_user)
     return {"detail": "Usuário deletado com sucesso"}
+

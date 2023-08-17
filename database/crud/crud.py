@@ -1,3 +1,6 @@
+CRUD: 
+
+
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
 from database.get_db import SessionLocal, get_db
@@ -10,6 +13,13 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 import database.auth as auth
 from database.get_db import SessionLocal, get_db
+from database.models.modelos import Usuario, Item
+from database.shemas.schemas import UsuarioCreate
+from database.models.modelos import Pedido
+from database.models.modelos import Produto
+from sqlalchemy.orm import joinedload
+from sqlalchemy.inspection import inspect
+
 from database.models.modelos import Loja, Usuario
 from database.shemas.schemas import LojaCreate, UsuarioCreate
 from jose import JWTError, jwt
@@ -46,6 +56,58 @@ def create_user(db: Session, user: UsuarioCreate):
     db.refresh(db_user)
     return db_user
 
+def to_dict(obj):
+    if isinstance(obj, Pedido):
+        return {
+            "id_pedido": obj.id_pedido,
+            "preco_total": obj.preco_total,
+            "itens": [to_dict(item) for item in obj.itens]
+        }
+    elif isinstance(obj, Item):
+        return {
+            "quantidade": obj.quantidade,
+            "nome_produto": obj.produtos.nome_produto  # Assumindo que 'produtos' é a relação que aponta para o Produto no modelo Item
+        }
+    return {}
+
+def get_pedidos_by_usuario(cpf_usuario: str, db: Session):
+    pedidos = (
+        db.query(Pedido)
+        .options(joinedload(Pedido.itens))
+        .filter(Pedido.cpf_usuario == cpf_usuario)
+        .filter(Pedido.pedido_status != 1)
+        .all()
+    )
+    
+    for pedido in pedidos:
+        print(f"Pedido ID: {pedido.id_pedido} - Itens: {pedido.itens}")
+        
+    return [to_dict(pedido) for pedido in pedidos]
+
+
+
+
+# Cancelamento de Pedidos
+def cancelar_pedido(pedido_id: int, cpf_usuario: str, db: Session):
+    # Primeiro, verificamos se o pedido existe e pertence ao CPF fornecido
+    pedido = db.query(Pedido).filter(Pedido.id_pedido == pedido_id, Pedido.cpf_usuario == cpf_usuario).first()
+
+    if not pedido:
+        raise HTTPException(status_code=404, detail="Pedido não encontrado")
+
+    if pedido.pedido_status == 1: 
+        raise HTTPException(status_code=404, detail="Pedido não foi confirmado")
+    
+    if pedido.pedido_status == 5: # ID do status "Cancelado"
+        raise HTTPException(status_code=403, detail="O pedido já foi cancelado anteriormente")
+
+    if pedido.pedido_status == 2: # ID do status "Confirmado"
+        pedido.pedido_status = 5 # Mudança para o status "Cancelado"
+        db.commit()
+        return {"message": "Pedido cancelado com sucesso"}
+    else: # Se for o ID 3 ou ID 4, não pode ser cancelado
+        raise HTTPException(status_code=403, detail="Pedido não pode mais ser cancelado")
+    
 
 #ITI
 def create_pedido_not_confirmed(db: Session, cpf_user: str):
@@ -126,4 +188,3 @@ def update_user_password(db, user, new_password):
 def delete_user(db, user):
     db.delete(user)
     db.commit()
-
