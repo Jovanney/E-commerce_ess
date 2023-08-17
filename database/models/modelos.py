@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Float, ForeignKeyConstraint, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
+
 
 DeclarativeBase = declarative_base()
 
@@ -83,8 +84,10 @@ class Pedido(Base):
      id_pedido=Column(Integer, primary_key=True)
      cpf_usuario = Column(String(11), ForeignKey('usuario.cpf'))
      preco_total=Column(Float)
-     status_pedido=Column(String(50))
-     
+     pedido_status=Column(Integer, ForeignKey('status.id_status'))
+
+
+     status = relationship('Status', back_populates='pedidos')
      usuario = relationship('Usuario', back_populates='pedidos')
      itens = relationship('Item', back_populates='pedidos') 
 class Item(Base):
@@ -98,3 +101,9 @@ class Item(Base):
     produtos = relationship('Produto', back_populates='itens')
     pedidos = relationship('Pedido', back_populates= 'itens')
     
+class Status(Base):
+    __tablename__ = 'status'
+
+    id_status = Column(Integer, primary_key= True)
+    descricao = Column(String(100))
+    pedidos = relationship('Pedido', back_populates= 'status')
