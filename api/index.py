@@ -1,10 +1,11 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database.crud.crud import get_user_by_email, create_user
+from database.crud.crud import create_user, get_pedidos_by_usuario, cancelar_pedido
 from database.get_db import get_db
-from database.shemas.schemas import UsuarioCreate
+from database.shemas.schemas import UsuarioCreate, PedidoBase
 from fastapi.middleware.cors import CORSMiddleware
-
+from pydantic import BaseModel
+from typing import List
 
 app = FastAPI()
 
@@ -22,18 +23,18 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"Hello": "World111"}
 
-@app.post('/usuarios/')
-def create_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
-    db_user = get_user_by_email(db = db, usuario_email=usuario.email)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    return create_user(db=db, user=usuario)
+@app.get('/pedidos/{cpf_usuario}/')
+def get_pedidos_route(cpf_usuario: str, db: Session = Depends(get_db)):
+    pedidos = get_pedidos_by_usuario(cpf_usuario, db)
+    if not pedidos:
+        raise HTTPException(status_code=404, detail="Usuário sem pedidos")
+    return pedidos
 
-@app.get('/usuarios/{usuario_id}')
-def read_usuario(usuario_id: int, db: Session = Depends(get_db)):
-    db_usuario = get_user_by_email(db, usuario_id)
-    if db_usuario is None:
-        raise HTTPException(status_code=404, detail='User not found')
-    return db_usuario
+@app.put('/cancelar_pedido/{cpf_usuario}/{pedido_id}')
+def cancelar_pedido_route(cpf_usuario: str, pedido_id: int, db: Session = Depends(get_db)):
+    return cancelar_pedido(cpf_usuario=cpf_usuario, pedido_id=pedido_id, db=db)
+
+
+
