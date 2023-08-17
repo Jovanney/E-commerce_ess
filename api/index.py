@@ -78,3 +78,8 @@ def update_senha(new_password: str, old_password: str, current_user: Type = Depe
                             detail="Nova senha não pode ser vazia")
     update_user_password(db, current_user, new_password)
     return {"detail": "Senha atualizada com sucesso"}
+
+@app.delete("/usuario/delete")
+def delete(current_user = Depends(get_current_user), db: Session = Depends(get_db)):
+    delete_user(db, current_user)
+    return {"detail": "Usuário deletado com sucesso"}
