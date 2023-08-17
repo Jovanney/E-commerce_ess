@@ -10,8 +10,8 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 import database.auth as auth
 from database.get_db import SessionLocal, get_db
-from database.models.modelos import Usuario, Item
-from database.shemas.schemas import UsuarioCreate
+from database.models.modelos import Status, Usuario, Produto, Item
+from database.shemas.schemas import UsuarioCreate, ProdutoCreate
 from database.models.modelos import Pedido
 from database.models.modelos import Produto
 from sqlalchemy.orm import joinedload
@@ -52,6 +52,43 @@ def create_user(db: Session, user: UsuarioCreate):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def get_produto_by_id(produto_id: int, db: SessionLocal = Depends(get_db)):
+    return db.query(Produto).filter(Produto.id_produto == produto_id).first()
+
+def create_prod(db: Session, produto: ProdutoCreate):
+    db_prod = Produto(**produto.dict())
+    db.add(db_prod)
+    db.commit()
+    db.refresh(db_prod)
+    return db_prod
+
+
+#Delete de colocar itens no menu principal da sua loja
+def delete_produto_by_id(db: Session, produto_id: int):
+    db_produto = db.query(Produto).filter(Produto.id_produto == produto_id).first()
+    if db_produto is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+    db.delete(db_produto)
+    db.commit()
+
+    
+
+# Função para atualizar um produto na entidade Produto
+def update_produto(db: Session, produto_id: int, new_ats: list): # Colocar o autenticação(so a loja do seu cnpj pode alterar seus produtos)
+    db_produto = db.query(Produto).filter(Produto.id_produto == produto_id).first()
+    if db_produto:
+        atributos = ['categoria_prod', 'nome_produto', 'marca_produto', 'preco', 'especificacoes']
+        for key, value in enumerate(new_ats):
+            if value is not None:
+                setattr(db_produto, atributos[key], value)
+
+        db.commit()
+        db.refresh(db_produto)
+
+    return db_produto
+
+
 
 def to_dict(obj):
     if isinstance(obj, Pedido):
