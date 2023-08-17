@@ -18,3 +18,8 @@ def get_user_test(cpf: str) -> Usuario:
 def get_pedido_by_id(pedido_id: int) -> Pedido:
     return None
 
+    """
+    This function simulates fetching an order by its ID from the database.
+    Here, we return None to simulate the absence of the order for testing purposes.
+    """
+    return None

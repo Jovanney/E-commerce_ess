@@ -45,6 +45,9 @@ def create_loja_c(db: Session, loja: LojaCreate):
     db.refresh(db_loja)
     return db_loja
 
+def get_user_by_cpf(usuario_cpf: str, db: SessionLocal = Depends(get_db)):
+    return db.query(Usuario).filter(Usuario.cpf == usuario_cpf).first()
+
 def create_user(db: Session, user: UsuarioCreate):
     db_user = Usuario(**user.dict())
     db_user.senha = auth.get_password_hash(db_user.senha)
@@ -221,4 +224,24 @@ def update_user_password(db, user, new_password):
     
 def delete_user(db, user):
     db.delete(user)
+    db.commit()
+def get_pedidos_by_status(status: int,cpf_user:str ,db: SessionLocal = Depends(get_db)):
+    return  db.query(Pedido).filter((Pedido.pedido_status == status) & (Pedido.cpf_usuario == cpf_user)).first()
+
+def get_itens_by_pedidos(pedido: Pedido, db: SessionLocal = Depends(get_db)):
+    return db.query(Item).filter(Item.id_pedido == pedido.id_pedido).all()
+
+def delete_item(pedido: Pedido, id_produto: int, db: SessionLocal = Depends(get_db)):
+    item = get_item(id_produto=id_produto, id_pedido=pedido.id_pedido, db=db) # Obter o item correspondente ao produto no pedido
+
+    if item:
+        db.delete(item)  # Remove o item da sessão
+        db.commit()       # Confirma as alterações no banco de dados
+    else:
+        raise HTTPException(status_code=404, detail="Item not found in the cart")
+    
+def clear_cart_by_pedido(pedido: Pedido, db: SessionLocal = Depends(get_db)):
+    itens = get_itens_by_pedidos(pedido=pedido, db=db)
+    for item in itens:
+        db.delete(item)
     db.commit()

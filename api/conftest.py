@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine
 from api.index import app
 from database.get_db import DATABASE_URL
+from api.index import app
 
 @pytest.fixture(scope="function")
 def client() -> Generator:

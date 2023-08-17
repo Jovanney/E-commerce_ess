@@ -201,3 +201,123 @@ def check_insert_product_different_store_response(context, detail: str):
     assert "detail" in context["response"].json()
     assert context["response"].json()["detail"] == detail
     return context
+@scenario(feature_name="../features/carrinho.feature", scenario_name="Removendo um item existente do carrinho")
+def test_remove_item():
+    pass
+
+@given(parsers.cfparse('Sou um usuário registrado no sistema com CPF igual a "{cpf}"'))
+def user_registered_with_cpf(cpf: str):
+    pass
+
+@given("Estou logado no sistema")
+def user_logged_in():
+    pass
+
+@given(parsers.cfparse('No banco de dados, temos um pedido com ID {id_pedido:d}, cpf_usuario igual a "{cpf}" e preço igual a {preco:d}, com status = "{status}"'))
+def order_exists_in_db(id_pedido: int, cpf: str, preco: int, status: str):
+    pass
+
+@given(parsers.cfparse('No carrinho, há um item com o produto com ID = {id_produto:d}, id_pedido = {id_pedido:d}, e quantidade = "{quantidade}"'))
+def item_in_cart(id_produto: int, id_pedido: int, quantidade: str):
+    pass
+
+@when(parsers.cfparse('Faço uma requisição do tipo DELETE para a rota /remove-item/ informando id_produto = "{id_produto:d}", e o meu cpf'))
+def send_remove_item_request(context, client, id_produto: int):
+    response = client.delete(f"/remove-item/?id_produto={id_produto}")
+    context["response"] = response
+    return context
+
+@then(parsers.cfparse('O servidor processa minha requisição, atualizando a tabela Item, excluindo o item com ID = "{id_produto:d}", id_pedido = "{id_pedido:d}" e quantidade = "{quantidade}"'))
+def check_item_removed(context, id_produto: int, id_pedido: int, quantidade: str):
+    pass
+
+#####################################################################################################################
+@scenario('../features/carrinho.feature', 'Removendo um item inexistente do carrinho')
+def test_remove_nonexistent_item():
+    pass
+
+@given(parsers.cfparse('Sou um usuário registrado no sistema com CPF igual a “{cpf}”'))
+def mock_user_registered(cpf):
+    pass
+
+@given(parsers.cfparse('Estou logado no sistema'))
+def mock_user_logged_in():
+    pass
+
+@given(parsers.cfparse('No banco de dados, temos um pedido com ID {id_pedido:d}, cpf_usuario igual a “{cpf}” e preço igual a {preco:f}, com status = "1"'))
+def mock_existing_cart(cpf, id_pedido, preco):
+    pass
+
+@given(parsers.cfparse('No carrinho há apenas um item com o produto com ID = {id_produto:d}, id_pedido = {id_pedido:d}, e quantidade = “{quantidade}”'))
+def mock_cart_with_item(id_produto, id_pedido, quantidade):
+    pass
+
+@when(parsers.cfparse('Faço uma requisição do tipo DELETE para a rota /remove-item/ informando o id_produto = "{id_produto}", e o meu cpf'))
+def send_remove_item_request(client, id_produto, cpf):
+    pass
+
+@then(parsers.cfparse('O servidor processa minha requisição, retornando o erro "{error}"'))
+def check_remove_item_response_error(error):
+    pass
+
+#####################################################################################################################
+@scenario(feature_name="../features/carrinho.feature", scenario_name="Limpando todo o carrinho de uma vez com itens no carrinho")
+def test_clear_cart_with_items():
+    pass
+
+@given(parsers.cfparse('Sou um usuário registrado no sistema com CPF igual a "{cpf}"'))
+def user_registered_with_cpf(cpf: str):
+    pass
+
+@given("Estou logado no sistema")
+def user_logged_in():
+    pass
+
+@given(parsers.cfparse('No banco de dados, temos um pedido com ID {id_pedido:d}, cpf_usuario igual a "{cpf}" e preço total igual a {preco_total:d}, com status = "{status}"'))
+def order_exists_in_db(id_pedido: int, cpf: str, preco_total: int, status: str):
+    pass
+
+@given(parsers.cfparse('Nesse pedido, há dois itens, o primeiro com o produto ID = {produto_id_1:d}, id_pedido = {id_pedido:d}, e quantidade = "{quantidade_1}", e o segundo com o produto ID = {produto_id_2:d}, id_pedido = {id_pedido:d}, e quantidade = "{quantidade_2}"'))
+def items_in_order(id_pedido: int, produto_id_1: int, quantidade_1: str, produto_id_2: int, quantidade_2: str):
+    pass
+
+@when(parsers.cfparse('Faço uma requisição do tipo DELETE para a rota /clear-carrinho/ informando o meu CPF'))
+def send_clear_cart_request(context, client, cpf: str):
+    response = client.delete(f"/clear-carrinho/?cpf={cpf}")
+    context["response"] = response
+    return context
+
+@then(parsers.cfparse('O servidor processa minha requisição, retornando a tabela Item, excluindo todos os itens do pedido relacionado ao meu CPF'))
+def check_items_cleared(context):
+    pass
+
+@then("Exclui o pedido")
+def check_order_deleted():
+    pass
+
+###################################################################################################################
+@scenario('../features/carrinho.feature', 'Limpando o carrinho de uma vez com o carrinho já vazio')
+def test_clear_empty_cart():
+    pass
+
+@given(parsers.cfparse('Sou um usuário registrado no sistema com CPF igual a “{cpf}”'))
+def mock_user_registered(cpf):
+    pass
+
+@given(parsers.cfparse('Estou logado no sistema'))
+def mock_user_logged_in():
+    pass
+
+@given(parsers.cfparse('No banco de dados, não temos nenhum pedido com status = ‘1’, não tem nada no carrinho'))
+def mock_no_cart():
+    pass
+
+@when(parsers.cfparse('Faço uma requisição do tipo DELETE para a rota /clear-carrinho/ informando o meu CPF'), target_fixture="context")
+def send_clear_cart_request(client, context, cpf):
+    response = client.delete(f"/clear-carrinho/{cpf}")
+    context["response"] = response
+    return context
+
+@then(parsers.cfparse('O servidor processa minha requisição, retornando o erro "{error}"'))
+def check_clear_cart_response_error(error):
+    pass

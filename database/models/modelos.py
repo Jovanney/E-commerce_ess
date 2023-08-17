@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm import declarative_base
 
 
+
 DeclarativeBase = declarative_base()
 
 class Base(DeclarativeBase):
@@ -106,4 +107,5 @@ class Status(Base):
 
     id_status = Column(Integer, primary_key= True)
     descricao = Column(String(100))
+    pedidos = relationship('Pedido', back_populates= 'status')
     pedidos = relationship('Pedido', back_populates= 'status')

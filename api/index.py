@@ -7,6 +7,9 @@ from database.shemas.schemas import UsuarioCreate, PedidoBase
 from database.crud.crud import delete_produto_by_id, get_user_by_email, create_user, get_produto_by_id, create_prod, update_produto
 from database.get_db import get_db
 from database.shemas.schemas import UsuarioCreate, ProdutoCreate
+from database.crud.crud import  clear_cart_by_pedido, delete_item, get_pedidos_by_status, get_user_by_cpf, create_user
+from database.get_db import get_db
+from database.shemas.schemas import  UsuarioCreate
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
@@ -155,7 +158,7 @@ def delete(current_user = Depends(get_current_user), db: Session = Depends(get_d
 
 @app.get('/usuarios/{usuario_id}')
 def read_usuario(usuario_id: int, db: Session = Depends(get_db)):
-    db_usuario = get_user_by_email(db, usuario_id)
+    db_usuario = get_user_by_cpf(db, usuario_id)
     if db_usuario is None:
         raise HTTPException(status_code=404, detail='User not found')
     return db_usuario
@@ -199,3 +202,22 @@ def update_produto_route(
     if db_produto is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return db_produto
+@app.delete('/remove-item')
+def delete_item_for_pedido(id_produto: int, usuario_cpf: str, db: Session = Depends(get_db)):
+    pedido = get_pedidos_by_status(status = 1, cpf_user=usuario_cpf, db=db) # Obter o pedido pelo CPF do usuário e status 1
+
+    if pedido is None:
+        raise HTTPException(status_code=404, detail='Pedido not found')
+    
+    delete_item(pedido=pedido, id_produto=id_produto, db=db)  # Chamar a função para deletar o item do pedido
+    return None
+
+@app.delete('/clear-carrinho')
+def clear_cart(usuario_cpf: str, db: Session = Depends(get_db)):    
+    pedido = get_pedidos_by_status(status = 1, cpf_user=usuario_cpf, db=db)
+    if pedido is None:
+        raise HTTPException(status_code=404, detail='Pedido not found')
+    else:
+        clear_cart_by_pedido(pedido = pedido, db=db) #Tira todos os itens do pedido
+        db.delete(pedido)  # Exclui o pedido
+        db.commit()
