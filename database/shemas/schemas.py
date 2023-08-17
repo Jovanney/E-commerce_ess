@@ -51,7 +51,7 @@ class PedidoBase(BaseModel):
     id_pedido:int
     cpf_usuario:str 
     preco_total:float 
-    status_pedido:str 
+    pedido_status:str 
 
 class Token(BaseModel):
     access_token: str

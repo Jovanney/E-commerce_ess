@@ -1,7 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
 from typing import Generator
-
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import create_engine
 from api.index import app
@@ -17,6 +16,7 @@ def client() -> Generator:
 
 @pytest.fixture
 def context():
+
     """
     Variable to store context data between steps.
     Note: remember to always return the context variable at the end of the each steps.
