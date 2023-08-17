@@ -23,3 +23,12 @@ def create_prod(db: Session, produto: ProdutoCreate):
     db.commit()
     db.refresh(db_prod)
     return db_prod
+
+
+#Delete de colocar itens no menu principal da sua loja
+def delete_produto_by_id(db: Session, produto_id: int):
+    db_produto = db.query(Produto).filter(Produto.id_produto == produto_id).first()
+    if db_produto is None:
+        raise HTTPException(status_code=404, detail="Product not found")
+    db.delete(db_produto)
+    db.commit()
