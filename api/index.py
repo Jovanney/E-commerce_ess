@@ -54,3 +54,9 @@ def read_produto(produto_id: int, db: Session = Depends(get_db)):
     if db_produto is None:
         raise HTTPException(status_code=404, detail='Product not found')
     return db_produto
+
+# Deletar itens cadastrados com base no ID
+@app.delete('/produtos/{produto_id}')
+def delete_produto(produto_id: int, db: Session = Depends(get_db)):
+    delete_produto_by_id(db=db, produto_id=produto_id)
+    return {"message": "Product Deleted"}
