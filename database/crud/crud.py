@@ -32,3 +32,20 @@ def delete_produto_by_id(db: Session, produto_id: int):
         raise HTTPException(status_code=404, detail="Product not found")
     db.delete(db_produto)
     db.commit()
+
+    
+
+# Função para atualizar um produto na entidade Produto
+def update_produto(db: Session, produto_id: int, new_ats: list): # Colocar o autenticação(so a loja do seu cnpj pode alterar seus produtos)
+    db_produto = db.query(Produto).filter(Produto.id_produto == produto_id).first()
+    if db_produto:
+        atributos = ['categoria_prod', 'nome_produto', 'marca_produto', 'preco', 'especificacoes']
+        for key, value in enumerate(new_ats):
+            if value is not None:
+                setattr(db_produto, atributos[key], value)
+
+        db.commit()
+        db.refresh(db_produto)
+
+    return db_produto
+
