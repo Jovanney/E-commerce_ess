@@ -10,7 +10,7 @@ def test_login_success():
 @given(parsers.cfparse('um usuário existente no banco de dados com email "{email}", senha "{password}", cpf "{cpf}" e nome "{name}"'))
 def mock_auth_service_response(email: str, password: str, cpf: str, name: str):
     """
-    Mock the get_user_test() method to return a user with the given email and password
+    Mock the  return a user with the given email and password
     """
     user_test = {"email": email, "senha": password, "cpf" : cpf, "nome": name}
     user_mock = mock.Mock(return_value={"email": "Joao2@gmail.com", "senha": "123", "cpf" : "12312312312", "nome": "Joao"})
