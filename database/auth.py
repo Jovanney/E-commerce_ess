@@ -21,7 +21,7 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 def authenticate(email: str, password: str, db: SessionLocal = Depends(get_db)):
-    user = crud.get_user_by_email(db = db, usuario_email = email)
+    user = crud.get_user_by_email(db = db, email_user = email)
     store = crud.get_loja_by_email(db = db, email_loja= email)
     entity = user if user else store
     if not entity:
