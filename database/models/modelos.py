@@ -98,6 +98,7 @@ class Item(Base):
     id_produto = Column(Integer, ForeignKey('produto.id_produto'))
     id_pedido = Column(Integer, ForeignKey('pedido.id_pedido'))
     quantidade = Column(Integer)
+    preco_total = Column(Float)
     
     produtos = relationship('Produto', back_populates='itens')
     pedidos = relationship('Pedido', back_populates= 'itens')
