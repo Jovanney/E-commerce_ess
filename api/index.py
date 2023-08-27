@@ -37,7 +37,7 @@ def get_pedidos_route(cpf_usuario: str, db: Session = Depends(get_db)):
 
 @app.get('/pedidos/{cpf_user}')
 def get_pedido_itens_cart(cpf_user: str, db: Session = Depends(get_db)):
-    id_status = 1 #significa que o pedido esta com status "nao confirmado"
+    id_status = 1 # significa que o pedido esta com status "nao confirmado"
     pedido = crud.get_pedidos_by_status(status = id_status, cpf_user=cpf_user, db = db)
     if pedido is None:
         raise HTTPException(status_code=404, detail='Pedido not found')
@@ -55,13 +55,6 @@ def read_produto(produto_id: int, db: Session = Depends(get_db)):
     if db_produto is None:
         raise HTTPException(status_code=404, detail='Product not found')
     return db_produto
-
-@app.get('/usuarios/{usuario_id}')
-def read_usuario(usuario_id: int, db: Session = Depends(get_db)):
-    db_usuario = crud.get_user_by_cpf(db, usuario_id)
-    if db_usuario is None:
-        raise HTTPException(status_code=404, detail='User not found')
-    return db_usuario
 
 @app.put('/cancelar_pedido/{cpf_usuario}/{pedido_id}')
 def cancelar_pedido_route(cpf_usuario: str, pedido_id: int, db: Session = Depends(get_db)):
