@@ -53,146 +53,152 @@ def check_response_json_contains_token_data(context):
     return context
 
 
-# """ Scenario: Falha no login devido a credenciais não existentes no banco """
-# @scenario(scenario_name="Falha no login devido a credenciais não existentes no banco", feature_name="../features/login.feature")
-# def test_login_failure():
-#     """ Falha no login devido a credenciais não existentes no banco """
+""" Scenario: Falha no login devido a credenciais não existentes no banco """
+@scenario(scenario_name="Falha no login devido a credenciais não existentes no banco", feature_name="../features/login.feature")
+def test_login_failure():
+    """ Falha no login devido a credenciais não existentes no banco """
 
-# @given(parsers.cfparse('um usuário com email "{email}", senha "{password}", cpf = "{cpf}" e nome = "{name}" não está cadastrado no banco'))
-# def ensure_user_not_exists(email: str, password: str, cpf: str, name: str):
-#     """
-#     Ensure there is no user with the given email and cpf in the database
-#     """
-#     user_test = {"email": email, "senha": password, "cpf" : cpf, "nome": name}
-#     user_mock = mock.Mock(return_value=None)
+@given(parsers.cfparse('um usuário com email "{email}", senha "{password}", cpf = "{cpf}" e nome = "{name}" não está cadastrado no banco'))
+def ensure_user_not_exists(email: str, password: str, cpf: str, name: str):
+    """
+    Ensure there is no user with the given email and cpf in the database
+    """
+    user_test = {"email": email, "senha": password, "cpf" : cpf, "nome": name}
+    user_mock = mock.Mock(return_value=None)
 
-#     assert user_test == user_mock.return_value
-# @when(
-#     parsers.cfparse('uma requisição POST é enviada para "/token" com email "{email}" e senha "{password}"'), 
-#     target_fixture="context"
-# )
-# def send_login_request(client, context, email: str, password: str):
-#     """
-#     Send a POST request to "/token" with the given email and password
-#     """
+    assert user_test != user_mock.return_value
 
-#     response = client.post("/token", data={"username": email, "password": password})
-#     context["response"] = response
-#     return context
+@when(
+    parsers.cfparse('uma requisição POST é enviada para "/token" com email "{email}" e senha "{password}"'), 
+    target_fixture="context"
+)
+def send_login_request(client, context, email: str, password: str):
+    """
+    Send a POST request to "/token" with the given email and password
+    """
 
-# @then(parsers.cfparse('o status da resposta deve ser {status_code:d}'), target_fixture="context")
-# def check_response_status_code(context, status_code: int):
-#     """
-#     Check if the response status code is the expected
-#     """
+    response = client.post("/token", data={"username": email, "password": password})
+    context["response"] = response
+    return context
 
-#     assert context["response"].status_code == status_code
-#     return context
+@then(parsers.cfparse('o status da resposta deve ser {status_code:d}'), target_fixture="context")
+def check_response_status_code(context, status_code: int):
+    """
+    Check if the response status code is the expected
+    """
 
-# @then(
-#     parsers.cfparse('a resposta deve conter o detalhe "{detail}"'), 
-#     target_fixture="context"
-# )
-# def check_response_detail(context, detail: str):
-#     """
-#     Check if the response contains the expected detail
-#     """
+    assert context["response"].status_code == status_code
+    return context
 
-#     assert context["response"].json()["detail"] == detail
-#     return context
+@then(
+    parsers.cfparse('a resposta deve conter o detalhe "{detail}"'), 
+    target_fixture="context"
+)
+def check_response_detail(context, detail: str):
+    """
+    Check if the response contains the expected detail
+    """
 
-
-# """ Scenario: Falha no login devido a email incorreto """
-# @scenario(scenario_name="Falha no login devido a email incorreto", feature_name="../features/login.feature")
-# def test_login_failure_due_to_incorrect_email():
-#     """ Falha no login devido a email incorreto """
-
-# @given(parsers.cfparse('um usuário existente no banco de dados com email "{email}", senha "{password}", cpf "{cpf}" e nome "{name}"'))
-# def create_user_in_database(email: str, password: str, cpf: str, name: str):
-#     """
-#     Ensure there is the user with the given email and cpf in the database
-#     """
-#     user = get_user_test(email=email, cpf=cpf)
-#     assert user is not None
-
-# @when(
-#     parsers.cfparse('uma requisição POST é enviada para "/token" com email "{email}" e senha "{password}"'), 
-#     target_fixture="context"
-# )
-# def send_login_request(client, context, email: str, password: str):
-#     """
-#     Send a POST request to "/token" with the given email and password
-#     """
-
-#     response = client.post("/token", data={"username": email, "password": password})
-#     context["response"] = response
-#     return context
-
-# @then(parsers.cfparse('o status da resposta deve ser {status_code:d}'), target_fixture="context")
-# def check_response_status_code(context, status_code: int):
-#     """
-#     Check if the response status code is the expected
-#     """
-
-#     assert context["response"].status_code == status_code
-#     return context
-
-# @then(
-#     parsers.cfparse('a resposta deve conter o detalhe "{detail}"'), 
-#     target_fixture="context"
-# )
-# def check_response_detail(context, detail: str):
-#     """
-#     Check if the response contains the expected detail
-#     """
-
-#     assert context["response"].json()["detail"] == detail
-#     return context
+    assert context["response"].json()["detail"] == detail
+    print(context)
+    return context
 
 
-# """ Scenario: Falha no login devido a senha incorreta """
-# @scenario(scenario_name="Falha no login devido a senha incorreta", feature_name="../features/login.feature")
-# def test_login_failure_due_to_incorrect_password():
-#     """ Falha no login devido a senha incorreta """
+""" Scenario: Falha no login devido a email incorreto """
+@scenario(scenario_name="Falha no login devido a email incorreto", feature_name="../features/login.feature")
+def test_login_failure_due_to_incorrect_email():
+    """ Falha no login devido a email incorreto """
 
-# @given(parsers.cfparse('um usuário existente no banco de dados com email "{email}", senha "{password}", cpf "{cpf}" e nome "{name}"'))
-# def create_user_in_database(email: str, password: str, cpf: str, name: str):
-#     """
-#     Ensure there is the user with the given email and cpf in the database
-#     """
-#     user = get_user_test(email=email, cpf=cpf)
-#     assert user is not None
+@given(parsers.cfparse('um usuário existente no banco de dados com email "{email}", senha "{password}", cpf "{cpf}" e nome "{name}"'))
+def create_user_in_database(email: str, password: str, cpf: str, name: str):
+    """
+    Ensure there is the user with the given email and cpf in the database
+    """
+    user_test = {"email": email, "senha": password, "cpf" : cpf, "nome": name}
+    user_mock = mock.Mock(return_value={"email": "Joao2@gmail.com", "senha": "123", "cpf" : "12312312312", "nome": "Joao"})
+    
+    assert user_test == user_mock.return_value
 
-# @when(
-#     parsers.cfparse('uma requisição POST é enviada para "/token" com email "{email}" e senha "{password}"'), 
-#     target_fixture="context"
-# )
-# def send_login_request(client, context, email: str, password: str):
-#     """
-#     Send a POST request to "/token" with the given email and password
-#     """
+@when(
+    parsers.cfparse('uma requisição POST é enviada para "/token" com email "{email}" e senha "{password}"'), 
+    target_fixture="context"
+)
+def send_login_request(client, context, email: str, password: str):
+    """
+    Send a POST request to "/token" with the given email and password
+    """
 
-#     response = client.post("/token", data={"username": email, "password": password})
-#     context["response"] = response
-#     return context
+    response = client.post("/token", data={"username": email, "password": password})
+    context["response"] = response
+    return context
 
-# @then(parsers.cfparse('o status da resposta deve ser {status_code:d}'), target_fixture="context")
-# def check_response_status_code(context, status_code: int):
-#     """
-#     Check if the response status code is the expected
-#     """
+@then(parsers.cfparse('o status da resposta deve ser "{status_code:d}"'), target_fixture="context")
+def check_response_status_code(context, status_code: int):
+    """
+    Check if the response status code is the expected
+    """
 
-#     assert context["response"].status_code == status_code
-#     return context
+    assert context["response"].status_code == status_code
+    return context
 
-# @then(
-#     parsers.cfparse('a resposta deve conter o detalhe "{detail}"'), 
-#     target_fixture="context"
-# )
-# def check_response_detail(context, detail: str):
-#     """
-#     Check if the response contains the expected detail
-#     """
+@then(
+    parsers.cfparse('a resposta deve conter o detalhe "{detail}"'), 
+    target_fixture="context"
+)
+def check_response_detail(context, detail: str):
+    """
+    Check if the response contains the expected detail
+    """
 
-#     assert context["response"].json()["detail"] == detail
-#     return context
+    assert context["response"].json()["detail"] == detail
+    return context
+
+
+""" Scenario: Falha no login devido a senha incorreta """
+@scenario(scenario_name="Falha no login devido a senha incorreta", feature_name="../features/login.feature")
+def test_login_failure_due_to_incorrect_password():
+    """ Falha no login devido a senha incorreta """
+
+@given(parsers.cfparse('um usuário existente no banco de dados com email "{email}", senha "{password}", cpf "{cpf}" e nome "{name}"'))
+def create_user_in_database(email: str, password: str, cpf: str, name: str):
+    """
+    Ensure there is the user with the given email and cpf in the database
+    """
+    user_test = {"email": email, "senha": password, "cpf" : cpf, "nome": name}
+    user_mock = mock.Mock(return_value={"email": "Joao2@gmail.com", "senha": "123", "cpf" : "12312312312", "nome": "Joao"})
+    
+    assert user_test == user_mock.return_value
+
+@when(
+    parsers.cfparse('uma requisição POST é enviada para "/token" com email "{email}" e senha "{password}"'), 
+    target_fixture="context"
+)
+def send_login_request(client, context, email: str, password: str):
+    """
+    Send a POST request to "/token" with the given email and password
+    """
+
+    response = client.post("/token", data={"username": email, "password": password})
+    context["response"] = response
+    return context
+
+@then(parsers.cfparse('o status da resposta deve ser "{status_code:d}"'), target_fixture="context")
+def check_response_status_code(context, status_code: int):
+    """
+    Check if the response status code is the expected
+    """
+
+    assert context["response"].status_code == status_code
+    return context
+
+@then(
+    parsers.cfparse('a resposta deve conter o detalhe "{detail}"'), 
+    target_fixture="context"
+)
+def check_response_detail(context, detail: str):
+    """
+    Check if the response contains the expected detail
+    """
+
+    assert context["response"].json()["detail"] == detail
+    return context
