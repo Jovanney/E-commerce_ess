@@ -23,3 +23,7 @@ def get_pedido_by_id(pedido_id: int) -> Pedido:
     Here, we return None to simulate the absence of the order for testing purposes.
     """
     return None
+
+def get_token_test(client, email, senha):
+    responde = client.post("/token", data={"username": email, "password": senha})
+    return responde.json()
