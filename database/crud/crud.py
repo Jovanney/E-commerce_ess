@@ -194,6 +194,24 @@ def get_pedidos_by_status(status: int,cpf_user:str ,db: SessionLocal = Depends(g
 def get_itens_by_pedidos(pedido: Pedido, db: SessionLocal = Depends(get_db)):
     return db.query(Item).filter(Item.id_pedido == pedido.id_pedido).all()
 
+def get_produtos_by_cart(pedido: Pedido, db: SessionLocal = Depends(get_db)):
+    results = (
+        db.query(Item, Produto)
+        .join(Produto, Produto.id_produto == Item.id_produto)
+        .filter(Item.id_pedido == pedido.id_pedido)
+        .all()
+    )
+
+    # Organizando os resultados para retornar para o cliente
+    items_details = []
+    for item, produto in results:
+        items_details.append({
+            "nome_produto": produto.nome_produto,
+            "preco": produto.preco,
+            "quantidade": item.quantidade
+        })
+
+    return items_details
 
 def update_quantidade_item(item: Item, db: SessionLocal = Depends(get_db)):
     db.merge(item)
@@ -252,3 +270,11 @@ def clear_cart_by_pedido(pedido: Pedido, db: SessionLocal = Depends(get_db)):
     for item in itens:
         db.delete(item)
     db.commit()
+
+def status_pedido_update(pedido: Pedido, db: SessionLocal = Depends(get_db)):
+    new_status = 2
+    pedido.pedido_status = new_status
+    db.merge(pedido)
+    db.commit()
+    return new_status
+    
