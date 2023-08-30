@@ -114,16 +114,24 @@ def get_pedidos_by_usuario(cpf_usuario: str, db: Session):
         .filter(Pedido.pedido_status != 1)
         .all()
     )
-    
+
+    if not pedidos:
+        return [{"mensagem": "Não há histórico de pedidos para este usuário."}]
+
+    resultado = []
     for pedido in pedidos:
-        print(f"Pedido ID: {pedido.id_pedido} - Itens: {pedido.itens}")
+        pedido_dict = to_dict(pedido)
+        pedido_dict["id_status"] = pedido.status.id_status
+        resultado.append(pedido_dict)
         
-    return [to_dict(pedido) for pedido in pedidos]
+    return resultado
 
 
 
 
 
+
+# Cancelamento de Pedidos
 def cancelar_pedido(pedido_id: int, cpf_usuario: str, db: Session):
     # Primeiro, verificamos se o pedido existe e pertence ao CPF fornecido
     pedido = db.query(Pedido).filter(Pedido.id_pedido == pedido_id, Pedido.cpf_usuario == cpf_usuario).first()
@@ -144,7 +152,6 @@ def cancelar_pedido(pedido_id: int, cpf_usuario: str, db: Session):
     else: # Se for o ID 3 ou ID 4, não pode ser cancelado
         raise HTTPException(status_code=403, detail="Pedido não pode mais ser cancelado")
     
-
 
 def create_pedido_not_confirmed(db: Session, cpf_user: str):
     db_pedido = Pedido()
