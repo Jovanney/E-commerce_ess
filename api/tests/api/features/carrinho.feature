@@ -21,4 +21,18 @@ Given No banco de dados, existe um item que tem um produto com id_produto "1"
 When Faço requisição POST para a rota "/novo-item/" com id_produto "2", cpf "98765432100" e a quantidade "2"
 Then o status da resposta deve ser "422"
 
+Scenario: Remoção bem-sucedida de um item do carrinho
+Given há um usuário existente no banco de dados com cpf "12345678900", um pedido com status "1" e um produto com id "1"
+When faço uma requisição delete para a rota "/remove-item/1/12345678900"
+Then recebo o status de resposta "200"
+	
+Scenario: Limpeza bem-sucedida dos itens do carrinho
+Given há um usuário existente no banco de dados com cpf "12345678900" onde há um pedido com status 1, contendo  um item
+When faço uma requisição delete para a rota "/clear-carrinho/12345678900"
+Then recebo o status de resposta "200" 
 
+Scenario: atualizando o status do pedido do carrinho
+Given há um usuário existente no banco de dados com cpf "98765432100" onde há um pedido com status 1, contendo  um item
+When faço uma requisição patch para a rota "/update-status-pedido/98765432100"
+Then recebo o status de resposta "200" 
+And recebo  status do pedido "2"
