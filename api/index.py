@@ -49,7 +49,8 @@ async def read_users_me(
 ):
     return current_user
 
-@app.get('/produtos/{produto_id}')
+# Exibir os itens cadastrados com base no ID
+@app.get('/view_Produtos/{produto_id}')
 def read_produto(produto_id: int, db: Session = Depends(get_db)):
     db_produto = crud.get_produto_by_id(db = db, produto_id=produto_id)
     if db_produto is None:
@@ -139,15 +140,18 @@ def delete(current_user = Depends(crud.get_current_user), db: Session = Depends(
     crud.delete_user(db, current_user)
     return {"detail": "Usuário deletado com sucesso"}
 
-@app.post('/produtos/')
+# adicionar produtos
+@app.post('/add_produtos/')
 def create_produto(produto: ProdutoCreate, db: Session = Depends(get_db)):
+    # Verificando se o CNPJ existe
     db_produto = crud.get_produto_by_id(db = db, produto_id=produto.id_produto)
     if db_produto:
         raise HTTPException(status_code=404, detail="id already registered")
     return crud.create_prod(db=db, produto=produto)
 
 
-@app.delete('/produtos/{produto_id}')
+# Deletar produtos cadastrados com base no ID
+@app.delete('/del_produtos/{produto_id}')
 def delete_produto(produto_id: int, db: Session = Depends(get_db)):
     crud.delete_produto_by_id(db=db, produto_id=produto_id)
     return {"message": "Product Deleted"}
@@ -163,12 +167,38 @@ def update_produto_route(
     new_especificacoes: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
-    print(new_preco)
     new_ats = [new_categoria, new_nome, new_marca, new_preco, new_especificacoes]
     db_produto = crud.update_produto(db, produto_id, new_ats)
     if db_produto is None:
         raise HTTPException(status_code=404, detail="Product not found")
     return db_produto
+
+
+# Exibir todos os produtos cadastrados
+@app.get('/All_Produtos/')
+def read_all_produtos(db: Session = Depends(get_db)):
+    produtos = crud.get_all_produtos(db=db)
+    if produtos == []:
+        raise HTTPException(status_code=404, detail="Product not found")
+    else:
+        return produtos
+    
+# Exibir todos os produtos cadastrados de um cnpj especifico
+@app.get('/All_Produtos_cnpj/{cnpj}')
+def read_all_produtos(cnpj:str, db: Session = Depends(get_db)):
+    produtos = crud.get_all_produtos_per_cnpj(cnpj=cnpj, db=db)
+    if produtos == []:
+        raise HTTPException(status_code=404, detail="Product not found")
+    else:
+        return produtos
+    
+# Exibir os itens cadastrados com base no nome
+@app.get('/view_Produtos_name/{nome}')
+def read_produtos_por_nome(nome: str, db: Session = Depends(get_db)):
+    produtos = crud.get_products_per_name(nome=nome, db=db)
+    if not produtos:
+        raise HTTPException(status_code=404, detail='Product not found')
+    return produtos
 
 @app.delete('/remove-item')
 def delete_item_for_pedido(id_produto: int, usuario_cpf: str, db: Session = Depends(get_db)):

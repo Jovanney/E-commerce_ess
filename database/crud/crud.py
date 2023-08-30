@@ -46,13 +46,18 @@ def create_user(db: Session, user: UsuarioCreate):
 def get_produto_by_id(produto_id: int, db: SessionLocal = Depends(get_db)):
     return db.query(Produto).filter(Produto.id_produto == produto_id).first()
 
+
 def create_prod(db: Session, produto: ProdutoCreate):
     db_prod = Produto(**produto.dict())
+    if db.query(Loja).filter(Loja.cnpj == db_prod.cnpj_loja).first() is None:
+        raise HTTPException(status_code=404, detail="cnpj not found")
     db.add(db_prod)
     db.commit()
     db.refresh(db_prod)
     return db_prod
 
+#Delete de colocar itens no menu principal da sua loja
+#Delete de colocar itens no menu principal da sua loja
 def delete_produto_by_id(db: Session, produto_id: int):
     db_produto = db.query(Produto).filter(Produto.id_produto == produto_id).first()
     if db_produto is None:
@@ -61,7 +66,9 @@ def delete_produto_by_id(db: Session, produto_id: int):
     db.commit()
 
 
-def update_produto(db: Session, produto_id: int, new_ats: list): 
+
+# Função para atualizar um produto na entidade Produto
+def update_produto(db: Session, produto_id: int, new_ats: list): # Colocar o autenticação(so a loja do seu cnpj pode alterar seus produtos)
     db_produto = db.query(Produto).filter(Produto.id_produto == produto_id).first()
     if db_produto:
         atributos = ['categoria_prod', 'nome_produto', 'marca_produto', 'preco', 'especificacoes']
@@ -73,6 +80,17 @@ def update_produto(db: Session, produto_id: int, new_ats: list):
         db.refresh(db_produto)
 
     return db_produto
+
+# Vai pegar todos os produtos no menu geral
+def get_all_produtos(db: SessionLocal = Depends(get_db)):
+    return db.query(Produto).all()
+
+# Vai pegar todos os produtos no menu geral de um cnpj especifico
+def get_all_produtos_per_cnpj(cnpj:str, db: SessionLocal = Depends(get_db)):
+    return db.query(Produto).filter(Produto.cnpj_loja == cnpj).all()
+
+def get_products_per_name(nome:str, db: SessionLocal = Depends(get_db)):
+    return db.query(Produto).filter(Produto.nome_produto.ilike(f'%{nome}%')).all()
 
 def to_dict(obj):
     if isinstance(obj, Pedido):
