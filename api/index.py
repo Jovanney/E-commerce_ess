@@ -35,12 +35,12 @@ def get_pedidos_route(cpf_usuario: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Usuário sem pedidos")
     return pedidos
 
-@app.get('/pedidos/{cpf_user}')
+@app.get('/carrinho/{cpf_user}')
 def get_pedido_itens_cart(cpf_user: str, db: Session = Depends(get_db)):
     id_status = 1 # significa que o pedido esta com status "nao confirmado"
     pedido = crud.get_pedidos_by_status(status = id_status, cpf_user=cpf_user, db = db)
     if pedido is None:
-        raise HTTPException(status_code=404, detail='Pedido not found')
+        return {'mensagem': 'Pedido não encontrado'}
     return crud.get_itens_by_pedidos(pedido=pedido, db=db)
 
 @app.get("/users/me/")
@@ -72,9 +72,8 @@ def create_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
 def post_item_cart(id_produto: int, usuario_cpf: str, quantidade: int, db: Session = Depends(get_db)):
     produto = crud.get_produto(id_produto=id_produto, db=db)
     pedido = crud.get_pedidos_by_status(status=1, cpf_user=usuario_cpf, db=db)
-
+    
     if pedido is None:
-        print('entrei')
         pedido = crud.create_pedido_not_confirmed(db=db, cpf_user=usuario_cpf)
 
         
@@ -93,10 +92,15 @@ def post_item_cart(id_produto: int, usuario_cpf: str, quantidade: int, db: Sessi
                 crud.update_total_price(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
                 return crud.create_item(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
             else:
-                return {'ERROR': 'produto inserido nao e da mesma loja que os produtos do carrinho'}
+                return {'mensagem': 'Produto inserido nao e da mesma loja que os produtos do carrinho'}
         else:
             crud.update_total_price(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
-            return crud.create_item(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
+            crud.create_item(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
+            return {
+                    "id_item": pedido,
+                    "id_produto": id_produto,
+                    "quantidade": quantidade
+                }
           
 @app.post('/loja/')
 def create_loja(loja: LojaCreate, db: Session = Depends(get_db)):
