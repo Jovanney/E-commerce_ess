@@ -35,13 +35,14 @@ def get_pedidos_route(cpf_usuario: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Usuário sem pedidos")
     return pedidos
 
-@app.get('/carrinho/{cpf_user}')
+@app.get('/pedidos/{cpf_user}')
 def get_pedido_itens_cart(cpf_user: str, db: Session = Depends(get_db)):
-    id_status = 1 # significa que o pedido esta com status "nao confirmado"
+    id_status = 1 #significa que o pedido esta com status "nao confirmado"
     pedido = crud.get_pedidos_by_status(status = id_status, cpf_user=cpf_user, db = db)
     if pedido is None:
-        return {'mensagem': 'Pedido não encontrado'}
-    return crud.get_itens_by_pedidos(pedido=pedido, db=db)
+        raise HTTPException(status_code=404, detail='Pedido not found')
+    retorno = crud.get_produtos_by_cart(pedido=pedido, db=db)
+    return retorno
 
 @app.get("/users/me/")
 async def read_users_me(
@@ -204,22 +205,32 @@ def read_produtos_por_nome(nome: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail='Product not found')
     return produtos
 
-@app.delete('/remove-item')
+@app.delete('/remove-item/{id_produto}/{usuario_cpf}')
 def delete_item_for_pedido(id_produto: int, usuario_cpf: str, db: Session = Depends(get_db)):
-    pedido = crud.get_pedidos_by_status(status = 1, cpf_user=usuario_cpf, db=db)
-
+    pedido = crud.get_pedidos_by_status(status = 1, cpf_user=usuario_cpf, db=db) 
+    
     if pedido is None:
         raise HTTPException(status_code=404, detail='Pedido not found')
     
-    crud.delete_item(pedido=pedido, id_produto=id_produto, db=db)  # Chamar a função para deletar o item do pedido
-    return None
+    crud.delete_item(pedido=pedido, id_produto=id_produto, db=db)  
+    return
 
-@app.delete('/clear-carrinho')
+@app.delete('/clear-carrinho/{usuario_cpf}')
 def clear_cart(usuario_cpf: str, db: Session = Depends(get_db)):    
     pedido = crud.get_pedidos_by_status(status = 1, cpf_user=usuario_cpf, db=db)
     if pedido is None:
         raise HTTPException(status_code=404, detail='Pedido not found')
     else:
-        crud.clear_cart_by_pedido(pedido = pedido, db=db) #Tira todos os itens do pedido
-        db.delete(pedido)  # Exclui o pedido
+        crud.clear_cart_by_pedido(pedido = pedido, db=db) 
+        db.delete(pedido)  
         db.commit()
+        return 
+
+@app.patch('/update-status-pedido/{usuario_cpf}')
+def update_status_pedido(usuario_cpf: str, db: Session = Depends(get_db)):
+    pedido = crud.get_pedidos_by_status(status = 1, cpf_user=usuario_cpf, db=db)
+    if pedido is None:
+        raise HTTPException(status_code=404, detail='Pedido not found')
+    else:
+        new_status = crud.status_pedido_update(pedido = pedido, db=db)
+        return {new_status}
