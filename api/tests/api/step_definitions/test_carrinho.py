@@ -115,4 +115,77 @@ def requisition_invalided(id_produto: int, cpf: str, quantidade: int, context, c
 @then(parsers.cfparse('O status da resposta deve ser "{status_code:d}"'))
 def check_status_invalided(context, status_code: int):
     assert context["response"].status_code == status_code
+    
+##################################################################################################################
 
+@scenario(scenario_name="Remoção bem-sucedida de um item do carrinho", feature_name="../features/carrinho.feature")
+def test_delete_item_for_pedido():
+    pass
+
+@given(parsers.cfparse('há um usuário existente no banco de dados com cpf "{cpf_user}", um pedido com status "{id_pedido}" e um produto com id "{id_produto}"'))
+def set_parameters_service_response(context, cpf_user:str, id_pedido:str, id_produto:str) :
+    context["cpf_user"] = cpf_user
+    context["id_pedido"] = id_pedido
+    context["id_produto"] = id_produto
+    
+@when(parsers.cfparse('faço uma requisição delete para a rota "{link}"'),
+      target_fixture="context")
+def send_test_delete_item_for_pedido(client, context, link:str):
+    response = client.delete(link)
+    context["response"] = response
+    return context
+
+@then(parsers.cfparse('recebo o status de resposta "{status_code}"'),
+      target_fixture="context")
+def check_response_status_code(context, status_code:int):
+    assert str(context["response"].status_code ) == status_code
+##################################################################################################################
+
+@scenario(scenario_name="Limpeza bem-sucedida dos itens do carrinho", feature_name="../features/carrinho.feature")
+def test_clear_cart():
+    """teste_clear"""
+    
+@given(parsers.cfparse('há um usuário existente no banco de dados com cpf "{cpf_user}" onde há um pedido com status 1, contendo  um item'))
+def set_parameters_clear_cart(context, cpf_user:str) :
+    context["cpf_user"] = cpf_user
+
+@when(parsers.cfparse('faço uma requisição delete para a rota "{link}"'),
+      target_fixture="context")
+def send_test_clear_cart(context, client, link:str):
+    response = client.delete(link)
+    context["response"] = response
+    return context
+
+@then(parsers.cfparse('recebo o status de resposta "{status_code}"'),
+      target_fixture="context")
+def check_response_status_code(context, status_code:str):
+    assert str(context["response"].status_code) == status_code
+
+##################################################################################################################
+
+@scenario(scenario_name="atualizando o status do pedido do carrinho", feature_name="../features/carrinho.feature")
+def test_update_status_pedido():
+    """teste_update_status_pedido"""
+
+@given(parsers.cfparse('há um usuário existente no banco de dados com cpf "{cpf_user}" onde há um pedido com status 1, contendo  um item'))
+def set_parameters_update_status_pedido(context, cpf_user:str) :
+    context["cpf_user"] = cpf_user
+
+@when(parsers.cfparse('faço uma requisição patch para a rota "{link}"'),
+      target_fixture="context")
+def send_test_update_status_pedido(client, context, link:str):
+    response = client.patch(link)
+    context["status"] = response.json()
+    context["response"] = response
+    return context
+
+@then(parsers.cfparse('recebo o status de resposta "{status_code}"'),
+      target_fixture="context")
+def check_response_status_code(context, status_code:str):
+    assert str(context["response"].status_code) == status_code
+    return context
+
+@then(parsers.cfparse('recebo  status do pedido "{status}"'),
+      target_fixture="context")
+def check_response_new_status(context, status:int):
+    assert context["status"][0] == int(status)
