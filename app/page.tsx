@@ -1,9 +1,11 @@
-import Image from 'next/image'
+"use client";
+
+
 
 export default function Home() {
   return (
-  <main className='flex justify-center'>
-    <h1>Bem-vindo ao meu E-commerce</h1>
+  <main className="">
+
   </main>
   )
 }
