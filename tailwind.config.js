@@ -19,6 +19,7 @@ module.exports = {
       'blackborder': '#000000',
       'button-red':'#EF4444',
       'green-success':'#22c55e',
+      'red-cancel': '#FF4C4C',
       'trash':'#dc2626'
     },
     container: {
