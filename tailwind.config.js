@@ -13,7 +13,13 @@ module.exports = {
       'bggray': '#A6A6A6',
       'bluebord': '#0D0D0D',
       'azulforte': '#F2F2F2',
-      'corb': '#00010D'
+      'corb': '#00010D',
+      'whitehistorico': '#FFFFFF',
+      'whiteb': '#F2F2F2',
+      'blackborder': '#000000',
+      'button-red':'#EF4444',
+      'green-success':'#22c55e',
+      'trash':'#dc2626'
     },
     container: {
       center: true,
