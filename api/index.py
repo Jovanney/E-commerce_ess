@@ -76,6 +76,7 @@ def post_item_cart(id_produto: int, quantidade: int, current_user: Type = Depend
     
     if pedido is None:
         pedido = crud.create_pedido_not_confirmed(db=db, cpf_user=current_user.cpf)
+
         
     item_existente = crud.get_item(id_produto=id_produto, id_pedido=pedido.id_pedido, db=db)  # Verifica se já existe um item igual
 
@@ -92,7 +93,7 @@ def post_item_cart(id_produto: int, quantidade: int, current_user: Type = Depend
                 crud.update_total_price(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
                 return crud.create_item(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
             else:
-                return {'mensagem': 'Produto inserido nao e da mesma loja que os produtos do carrinho'}
+                raise HTTPException(status_code=404, detail="Produto inserido nao e da mesma loja que os produtos do carrinho")
         else:
             crud.update_total_price(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
             crud.create_item(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
