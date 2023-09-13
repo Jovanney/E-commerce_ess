@@ -16,16 +16,8 @@ interface Produto {
 const DEFAULT_IMAGE_URL = "https://images.unsplash.com/photo-1560769629-975ec94e6a86?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1964&q=80";
 
 const getProdutos = async (): Promise<Produto[]> => {  
-  const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error("Token não encontrado.");
-  }
 
-  const res = await fetch(`http://127.0.0.1:8000/All_Produtos/`, {
-    headers: {
-        'Authorization': `Bearer ${JSON.parse(token)["access_token"]}`
-      }
-  });
+  const res = await fetch(`http://127.0.0.1:8000/All_Produtos/`);
 
   if (!res.ok) {
     throw new Error(`Failed to fetch data: ${res.statusText}`);

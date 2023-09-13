@@ -31,7 +31,7 @@ const cartPage = () => {
       if (token) {
   
       try {
-        const res = await fetch(`http://127.0.0.1:8000/pedidos/`, {
+        const res = await fetch(`http://127.0.0.1:8000/my-cart/`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
