@@ -30,14 +30,14 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
-@app.get('/pedidos/{cpf_usuario}/')
-def get_pedidos_route(cpf_usuario: str, db: Session = Depends(get_db)):
-    pedidos = crud.get_pedidos_by_usuario(cpf_usuario, db)
+@app.get('/pedidos')
+def get_pedidos_route(db: Session = Depends(get_db), current_user: Type = Depends(crud.get_current_user)):
+    pedidos = crud.get_pedidos_by_usuario(current_user.cpf,db)
     if not pedidos:
         raise HTTPException(status_code=404, detail="Usuário sem pedidos")
     return pedidos
 
-@app.get('/pedidos/')
+@app.get('/cart/')
 def get_pedido_itens_cart(current_user: Type = Depends(crud.get_current_user), db: Session = Depends(get_db)):
     id_status = 1 #significa que o pedido esta com status "nao confirmado"
     pedido = crud.get_pedidos_by_status(status = id_status, cpf_user=current_user.cpf, db = db)
@@ -60,9 +60,9 @@ def read_produto(produto_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail='Product not found')
     return db_produto
 
-@app.put('/cancelar_pedido/{cpf_usuario}/{pedido_id}')
-def cancelar_pedido_route(cpf_usuario: str, pedido_id: int, db: Session = Depends(get_db)):
-    return crud.cancelar_pedido(cpf_usuario=cpf_usuario, pedido_id=pedido_id, db=db)
+@app.put('/cancelar_pedido/{pedido_id}')
+def cancelar_pedido_route(pedido_id: int, db: Session = Depends(get_db), current_user: Type = Depends(crud.get_current_user)):
+    return crud.cancelar_pedido(cpf_usuario = current_user.cpf, pedido_id=pedido_id, db=db)
 
 @app.post('/usuarios/')
 def create_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):

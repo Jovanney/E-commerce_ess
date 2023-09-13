@@ -64,7 +64,7 @@ const NavBar: React.FC = () => {
           <div className='flex gap-3 items-center justify-end w-full'>
             <DropdownMenuConfigUser/>
             <Link href="/cart" className={buttonVariants()}>Carrinho&ensp;<ShoppingCart size={30}/></Link>
-            <Link href="/" className={buttonVariants()}>Pedidos&ensp;<CreditCard size={30}/></Link>
+            <Link href="/pedidos" className={buttonVariants()}>Pedidos&ensp;<CreditCard size={30}/></Link>
           </div>
         ) : loja ? (
           <div className='flex gap-3 items-center justify-end w-full'>

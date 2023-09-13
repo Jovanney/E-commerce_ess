@@ -20,7 +20,9 @@ module.exports = {
       'button-red':'#EF4444',
       'green-success':'#22c55e',
       'red-cancel': '#FF4C4C',
-      'trash':'#dc2626'
+      'trash':'#dc2626',
+      'red-info': '#FF6B6B',           
+      'red-light': '#FFB6B6'
     },
     container: {
       center: true,
