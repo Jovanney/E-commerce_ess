@@ -249,7 +249,27 @@ def update_user_password(db, user, new_password):
 def delete_user(db, user):
     db.delete(user)
     db.commit()
-    
+
+def get_produtos_by_cart(pedido: Pedido, db: SessionLocal = Depends(get_db)):
+    results = (
+        db.query(Item, Produto)
+        .join(Produto, Produto.id_produto == Item.id_produto)
+        .filter(Item.id_pedido == pedido.id_pedido)
+        .all()
+    )
+
+    # Organizando os resultados para retornar para o cliente
+    items_details = []
+    for item, produto in results:
+        items_details.append({
+            "id": produto.id_produto,
+            "nome_produto": produto.nome_produto,
+            "preco": produto.preco,
+            "quantidade": item.quantidade
+        })
+
+    return items_details
+
 def get_pedidos_by_status(status: int,cpf_user:str ,db: SessionLocal = Depends(get_db)):
     return  db.query(Pedido).filter((Pedido.pedido_status == status) & (Pedido.cpf_usuario == cpf_user)).first()
 
@@ -257,24 +277,39 @@ def get_itens_by_pedidos(pedido: Pedido, db: SessionLocal = Depends(get_db)):
     return db.query(Item).filter(Item.id_pedido == pedido.id_pedido).all()
 
 def delete_item(pedido: Pedido, id_produto: int, db: SessionLocal = Depends(get_db)):
-    item = get_item(id_produto=id_produto, id_pedido=pedido.id_pedido, db=db) # Obter o item correspondente ao produto no pedido
-
+    item = get_item(id_produto=id_produto, id_pedido=pedido.id_pedido, db=db) 
+    quantidade = item.quantidade
+    produto = get_produto(id_produto=id_produto, db=db)
+    pedido.preco_total = float(pedido.preco_total) + (float(produto.preco)*-quantidade)
     if item:
-        db.delete(item)  # Remove o item da sessão
-        db.commit()       # Confirma as alterações no banco de dados
+        db.delete(item)  
+        db.commit()       
     else:
         raise HTTPException(status_code=404, detail="Item not found in the cart")
+
+    return {"id": item.id_produto}
     
 def clear_cart_by_pedido(pedido: Pedido, db: SessionLocal = Depends(get_db)):
-    itens = get_itens_by_pedidos(pedido=pedido, db=db)
-    for item in itens:
-        db.delete(item)
+    db.delete(pedido)  
     db.commit()
-
+    
 def status_pedido_update(pedido: Pedido, db: SessionLocal = Depends(get_db)):
     new_status = 2
     pedido.pedido_status = new_status
     db.merge(pedido)
     db.commit()
     return new_status
+
+def reduce_item_quantity(pedido: Pedido, id_produto: int, db: SessionLocal = Depends(get_db)):
+    item = get_item(id_produto=id_produto, id_pedido=pedido.id_pedido, db=db) 
+    quantidade = item.quantidade
+    
+    if item:
+        item.quantidade = quantidade-1
+        db.merge(item)
+        db.commit()
+        return {"id": item.id_produto, "quantidade": item.quantidade}
+    
+    else:
+        raise HTTPException(status_code=404, detail="Item not found in the cart")
     
