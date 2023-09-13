@@ -1,9 +1,11 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from typing import Optional, Annotated, Type
 from database.get_db import get_db
+from database.models.modelos import Produto
 from database.shemas.schemas import UsuarioCreate, ProdutoCreate, Token, LojaCreate
 import database.crud.crud as crud
 from datetime import timedelta
@@ -27,8 +29,6 @@ app.add_middleware(
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
-
-#DANIEL CONSERTE O NOME DA ROTA ABAIXO
 
 @app.get('/pedidos')
 def get_pedidos_route(db: Session = Depends(get_db), current_user: Type = Depends(crud.get_current_user)):
@@ -60,9 +60,9 @@ def read_produto(produto_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail='Product not found')
     return db_produto
 
-@app.put('/cancelar_pedido/{cpf_usuario}/{pedido_id}')
-def cancelar_pedido_route(cpf_usuario: str, pedido_id: int, db: Session = Depends(get_db)):
-    return crud.cancelar_pedido(cpf_usuario=cpf_usuario, pedido_id=pedido_id, db=db)
+@app.put('/cancelar_pedido/{pedido_id}')
+def cancelar_pedido_route(pedido_id: int, db: Session = Depends(get_db), current_user: Type = Depends(crud.get_current_user)):
+    return crud.cancelar_pedido(cpf_usuario = current_user.cpf, pedido_id=pedido_id, db=db)
 
 @app.post('/usuarios/')
 def create_usuario(usuario: UsuarioCreate, db: Session = Depends(get_db)):
@@ -78,6 +78,7 @@ def post_item_cart(id_produto: int, quantidade: int, current_user: Type = Depend
     
     if pedido is None:
         pedido = crud.create_pedido_not_confirmed(db=db, cpf_user=current_user.cpf)
+
         
     item_existente = crud.get_item(id_produto=id_produto, id_pedido=pedido.id_pedido, db=db)  # Verifica se já existe um item igual
 
@@ -94,7 +95,7 @@ def post_item_cart(id_produto: int, quantidade: int, current_user: Type = Depend
                 crud.update_total_price(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
                 return crud.create_item(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
             else:
-                return {'mensagem': 'Produto inserido nao e da mesma loja que os produtos do carrinho'}
+                raise HTTPException(status_code=404, detail="Produto inserido nao e da mesma loja que os produtos do carrinho")
         else:
             crud.update_total_price(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
             crud.create_item(db=db, produto=produto, pedido=pedido, quantidade=quantidade)
@@ -148,11 +149,18 @@ def delete(current_user = Depends(crud.get_current_user), db: Session = Depends(
 
 # adicionar produtos
 @app.post('/add_produtos/')
-def create_produto(produto: ProdutoCreate, db: Session = Depends(get_db)):
-    # Verificando se o CNPJ existe
-    db_produto = crud.get_produto_by_id(db = db, produto_id=produto.id_produto)
+def create_produto(produto: ProdutoCreate, db: Session = Depends(get_db), current_user: Type = Depends(crud.get_current_user)):
+    # Consultar o banco de dados para encontrar o último id_produto usado
+    last_product = db.query(func.max(Produto.id_produto)).scalar()
+    # Incrementar o último id_produto encontrado
+    new_id_produto = last_product + 1 if last_product else 1
+    
+    produto.id_produto = new_id_produto
+    produto.cnpj_loja = current_user.cnpj
+    db_produto = crud.get_produto_by_id(db=db, produto_id=new_id_produto)
     if db_produto:
         raise HTTPException(status_code=404, detail="id already registered")
+    
     return crud.create_prod(db=db, produto=produto)
 
 
@@ -166,14 +174,14 @@ def delete_produto(produto_id: int, db: Session = Depends(get_db)):
 @app.put("/update_produto/{produto_id}")
 def update_produto_route(
     produto_id: int,
-    new_categoria: Optional[str] = None,
-    new_nome: Optional[str] = None,
-    new_marca: Optional[str] = None,
-    new_preco: Optional[int] = None,
-    new_especificacoes: Optional[str] = None,
+    categoria_prod: Optional[str] = None,
+    nome_produto: Optional[str] = None,
+    marca_produto: Optional[str] = None,
+    preco: Optional[int] = None,
+    especificacoes: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
-    new_ats = [new_categoria, new_nome, new_marca, new_preco, new_especificacoes]
+    new_ats = [categoria_prod, nome_produto, marca_produto, preco, especificacoes]
     db_produto = crud.update_produto(db, produto_id, new_ats)
     if db_produto is None:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -189,10 +197,11 @@ def read_all_produtos(db: Session = Depends(get_db)):
     else:
         return produtos
     
+    
 # Exibir todos os produtos cadastrados de um cnpj especifico
-@app.get('/All_Produtos_cnpj/{cnpj}')
-def read_all_produtos(cnpj:str, db: Session = Depends(get_db)):
-    produtos = crud.get_all_produtos_per_cnpj(cnpj=cnpj, db=db)
+@app.get('/All_Produtos_cnpj')
+def read_all_produtos(db: Session = Depends(get_db), current_user: Type = Depends(crud.get_current_user)):
+    produtos = crud.get_all_produtos_per_cnpj(cnpj=current_user.cnpj, db=db)
     if produtos == []:
         raise HTTPException(status_code=404, detail="Product not found")
     else:
