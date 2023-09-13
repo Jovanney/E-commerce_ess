@@ -37,7 +37,7 @@ def get_pedidos_route(db: Session = Depends(get_db), current_user: Type = Depend
         raise HTTPException(status_code=404, detail="Usuário sem pedidos")
     return pedidos
 
-@app.get('/cart/')
+@app.get('/my-cart/')
 def get_pedido_itens_cart(current_user: Type = Depends(crud.get_current_user), db: Session = Depends(get_db)):
     id_status = 1 #significa que o pedido esta com status "nao confirmado"
     pedido = crud.get_pedidos_by_status(status = id_status, cpf_user=current_user.cpf, db = db)
