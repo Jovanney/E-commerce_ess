@@ -153,11 +153,9 @@ def create_produto(produto: ProdutoCreate, db: Session = Depends(get_db), curren
     # Consultar o banco de dados para encontrar o último id_produto usado
     last_product = db.query(func.max(Produto.id_produto)).scalar()
     # Incrementar o último id_produto encontrado
-    new_id_produto = last_product + 1 if last_product else 1
-    
-    produto.id_produto = new_id_produto
+    produto.id_produto = last_product + 1 if last_product else 1
     produto.cnpj_loja = current_user.cnpj
-    db_produto = crud.get_produto_by_id(db=db, produto_id=new_id_produto)
+    db_produto = crud.get_produto_by_id(db=db, produto_id=produto.id_produto)
     if db_produto:
         raise HTTPException(status_code=404, detail="id already registered")
     
