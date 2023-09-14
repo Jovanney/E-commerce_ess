@@ -23,7 +23,7 @@ const cartPage = () => {
   }
 
   const [items, setItems] = useState<Item[]>([]);
-  const DEFAULT_IMAGE_URL = "https://avatars.githubusercontent.com/u/101846159?v=4";
+  const DEFAULT_IMAGE_URL = "https://cdn.discordapp.com/attachments/1024735926557089812/1151889989731369001/shopping-cart_icon-icons.png";
 
   useEffect(() => {
     const fetchData = async () => {
