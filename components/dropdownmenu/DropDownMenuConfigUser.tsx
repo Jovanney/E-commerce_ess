@@ -24,6 +24,8 @@ import { Input } from "../ui/input";
 import * as z from "zod";
 import { zodResolver} from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { toast, useToast } from "@/components/ui/use-toast";
+
 
 const FormSchema = z.object({
     senha: z.string().min(1, 'É necessário informar a senha antiga'),
@@ -53,10 +55,24 @@ const changePassword = async (values: z.infer<typeof FormSchema>) => {
       })
     })
     if (!response.ok) {
-      alert("Senha antiga incorreta");
+      toast({
+        title: "Senha antiga incorreta",
+        description: "E-PASS",
+        style: {
+         backgroundColor: "#FF0000",
+         color: "white" 
+       },
+      })
     }
     else {
-      window.location.href= '/'
+      toast({
+        title: "Senha Alterada com Sucesso",
+        description: "E-PASS",
+        style: {
+         backgroundColor: "#4CAF50", 
+         color: "white" 
+       },
+      })
     }
   }
 };

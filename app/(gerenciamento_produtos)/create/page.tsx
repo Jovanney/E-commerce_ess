@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import React, { useState } from 'react';
 import { toast, useToast } from "@/components/ui/use-toast"
+import { PanelTopInactive } from 'lucide-react';
 
 
 interface ItemBase {
@@ -41,15 +42,6 @@ const addProduto = async (newProduto: ProdutoCreate) => {
         description: "E-PASS",
         style: {
           backgroundColor: "#4CAF50", 
-          color: "white" 
-        }
-      });
-    } else if (response.status === 404) {
-      toast({
-        title: "Error adding product",
-        description: "E-PASS",
-        style: {
-          backgroundColor: "#FF0000", 
           color: "white" 
         }
       });
@@ -119,8 +111,8 @@ function AddProduto() {
       <NavBar/> 
       <div className="flex-1 text-center bg-whitehistorico p-2 pt-60">
         <div className="p-4">
-          <div className="add-product-box">
-            <h1 className="mb-4 text-2xl"><b>Cadastro de produto</b></h1>
+          <div className="bg-white shadow-md p-6 mb-6 justify-between border border-black border-2 rounded">
+          <h1 className="mb-4 text-2xl"><div className="flex flex-row"><PanelTopInactive /><b> Cadastro de produto</b></div></h1>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="">
                 <Label className="block">

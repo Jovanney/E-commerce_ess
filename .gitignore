@@ -7,8 +7,7 @@ __pycache__/
 /.pnp
 .pnp.js
 
-#features
-/features
+
 
 # testing
 /coverage
